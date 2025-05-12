@@ -1,0 +1,114 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm fixed-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
+            <img src="{{ asset('images/logo-tptp.png') }}" alt="Logo TPTP" height="40" class="me-2">
+            <div>
+                <span class="fw-bold">TPTP</span>
+                <small class="d-block" style="font-size: 0.7rem; line-height: 1;">Teknologi Produksi Tanaman Pangan</small>
+            </div>
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{{ url('/') }}">Beranda</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        Profil
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Visi Misi</a></li>
+                        <li><a class="dropdown-item" href="#">Struktur Organisasi</a></li>
+                        <li><a class="dropdown-item" href="#">Dosen & Staff</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Akademik</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Penelitian</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Pengabdian</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Galeri</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Kontak</a>
+                </li>
+            </ul>
+            
+            <div class="d-flex">
+                @if(auth()->check())
+                    <a href="{{ url('/admin') }}" class="btn btn-outline-light me-2">
+                        <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-sign-out-alt me-1"></i> Logout
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ url('/admin/login') }}" class="btn btn-warning">
+                        <i class="fas fa-sign-in-alt me-1"></i> Admin Login
+                    </a>
+                @endif
+            </div>
+        </div>
+    </div>
+</nav>
+
+<style>
+    .navbar {
+        padding: 0.8rem 0;
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #198754, #13653f);
+    }
+    
+    .navbar-brand {
+        font-weight: 700;
+    }
+    
+    .nav-link {
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        position: relative;
+    }
+    
+    .nav-link:after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: var(--accent-color);
+        transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover:after,
+    .nav-link.active:after {
+        width: 100%;
+    }
+    
+    .dropdown-menu {
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .dropdown-item {
+        font-weight: 500;
+    }
+    
+    .dropdown-item:hover {
+        background-color: rgba(25, 135, 84, 0.1);
+        color: var(--primary-color);
+    }
+</style>
