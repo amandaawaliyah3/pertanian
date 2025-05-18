@@ -3,15 +3,13 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\FasilitasResource\Pages;
-use App\Filament\Resources\FasilitasResource\RelationManagers;
 use App\Models\Fasilitas;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Storage;
 
 class FasilitasResource extends Resource
 {
@@ -19,41 +17,34 @@ class FasilitasResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-building-library';
     protected static ?string $modelLabel = 'Fasilitas';
     protected static ?string $navigationGroup = 'Profil Prodi';
+    protected static ?string $navigationLabel = 'Manajemen Fasilitas';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Informasi Fasilitas')
-                    ->schema([
-                        Forms\Components\FileUpload::make('foto')
-                            ->image()
-                            ->directory('fasilitas')
-                            ->columnSpanFull(),
-                        Forms\Components\TextInput::make('nama')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\Select::make('jenis')
-                            ->options([
-                                'laboratorium' => 'Laboratorium',
-                                'greenhouse' => 'Greenhouse',
-                                'lahan_praktikum' => 'Lahan Praktikum',
-                                'ruang_kelas' => 'Ruang Kelas',
-                                'lainnya' => 'Lainnya',
-                            ])
-                            ->required(),
-                        Forms\Components\Textarea::make('deskripsi')
-                            ->required()
-                            ->columnSpanFull(),
-                    ]),
-                
-                Forms\Components\Section::make('Detail Tambahan')
-                    ->schema([
-                        Forms\Components\TextInput::make('lokasi')
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('kapasitas')
-                            ->maxLength(255),
-                    ])->columns(2),
+                Forms\Components\FileUpload::make('foto')
+                    ->label('Foto Fasilitas')
+                    ->image()
+                    ->directory('fasilitas')
+                    ->required()
+                    ->maxSize(1024)
+                    ->columnSpanFull(),
+                    
+                Forms\Components\TextInput::make('nama')
+                    ->label('Nama Fasilitas')
+                    ->required()
+                    ->maxLength(255),
+                    
+                Forms\Components\Select::make('jenis')
+                    ->label('Jenis Fasilitas')
+                    ->options(Fasilitas::JENIS)
+                    ->required(),
+                    
+                Forms\Components\Textarea::make('deskripsi')
+                    ->label('Deskripsi')
+                    ->required()
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -63,40 +54,53 @@ class FasilitasResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('foto')
                     ->label('Foto')
-                    ->circular(),
+                    ->disk('public')
+                    ->height(60)
+                    ->width(60)
+                    ->square(),
+                    
                 Tables\Columns\TextColumn::make('nama')
-                    ->searchable(),
+                    ->label('Nama')
+                    ->searchable()
+                    ->sortable(),
+                    
                 Tables\Columns\TextColumn::make('jenis')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('lokasi')
-                    ->searchable(),
+                    ->label('Jenis')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'laboratorium' => 'info',
+                        'greenhouse' => 'success',
+                        'lahan_praktikum' => 'warning',
+                        'ruang_kelas' => 'primary',
+                        default => 'gray',
+                    }),
+                    
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Dibuat')
+                    ->dateTime()
+                    ->sortable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('jenis')
-                    ->options([
-                        'laboratorium' => 'Laboratorium',
-                        'greenhouse' => 'Greenhouse',
-                        'lahan_praktikum' => 'Lahan Praktikum',
-                        'ruang_kelas' => 'Ruang Kelas',
-                        'lainnya' => 'Lainnya',
-                    ]),
+                    ->options(Fasilitas::JENIS)
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->before(function (Fasilitas $record) {
+                        Storage::disk('public')->delete($record->foto);
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function ($records) {
+                            foreach ($records as $record) {
+                                Storage::disk('public')->delete($record->foto);
+                            }
+                        }),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array

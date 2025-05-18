@@ -5,6 +5,7 @@
 @section('content')
 <div class="py-5 bg-light">
     <div class="container">
+         <div class="container mt-5 pt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold text-success">{{ $semesterName }}</h2>
             <a href="{{ route('kurikulum') }}" class="btn btn-outline-success">

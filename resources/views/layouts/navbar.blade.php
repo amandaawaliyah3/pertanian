@@ -39,6 +39,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/galeri">Galeri</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/fasilitas">Fasilitas</a>
+                </li>
             </ul>
             
             <div class="d-flex">

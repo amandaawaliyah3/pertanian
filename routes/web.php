@@ -54,8 +54,7 @@ Route::post('/dosen/set-kaprodi', [DosenController::class, 'setKaprodi'])
     ->name('dosen.set-kaprodi');
 
 // Fasilitas
-Route::get('/fasilitas', [FasilitasController::class, 'index'])->name('fasilitas');
-Route::get('/fasilitas/{id}', [FasilitasController::class, 'show'])->name('fasilitas.show');
+Route::get('/fasilitas', [FasilitasController::class, 'index'])->name('fasilitas.index');
 
 // 🖼️ Galeri Routes
 Route::prefix('galeri')->name('galeri.')->group(function () {
