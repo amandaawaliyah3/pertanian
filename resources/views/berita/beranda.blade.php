@@ -4,7 +4,7 @@
 
 @section('content')
 <style>
-    /* Tambahan padding untuk navbar fixed */
+    /* CSS Utama */
     body {
         padding-top: 70px;
         background-color: #f7f9fa;
@@ -14,7 +14,6 @@
         background-size: 120px, 120px;
     }
 
-    /* Hero Section */
     .hero-section {
         background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/hero-bg.jpg');
         background-size: cover;
@@ -73,7 +72,6 @@
         color: var(--dark-color);
     }
 
-    /* Section Title */
     .section-title {
         position: relative;
         display: inline-block;
@@ -91,27 +89,19 @@
         border-radius: 2px;
     }
 
-    /* BERITA */
+    /* BERITA dengan scroll otomatis */
     .scroll-container {
         display: flex;
-        gap: 2rem;
-        overflow-x: auto;
-        scroll-behavior: smooth;
+        overflow-x: hidden;
         padding-bottom: 1rem;
+        position: relative;
     }
     
-    .scroll-container::-webkit-scrollbar {
-        height: 8px;
-    }
-    
-    .scroll-container::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 10px;
-    }
-    
-    .scroll-container::-webkit-scrollbar-thumb {
-        background: var(--primary-color);
-        border-radius: 10px;
+    .berita-wrapper {
+        display: flex;
+        gap: 2rem;
+        transition: transform 1s ease-in-out;
+        will-change: transform;
     }
     
     .berita-item {
@@ -278,9 +268,9 @@
             font-size: 1rem;
         }
         
-        .scroll-container {
+        .berita-wrapper {
             flex-direction: column;
-            overflow-x: hidden;
+            gap: 1.5rem;
         }
         
         .berita-item {
@@ -315,8 +305,8 @@
             <h1 class="hero-title">Teknologi Produksi Tanaman Pangan</h1>
             <p class="hero-subtitle">Menyiapkan ahli di bidang teknologi produksi tanaman pangan yang kompeten, inovatif, dan berdaya saing global untuk mendukung ketahanan pangan nasional.</p>
             <div class="d-flex gap-3 justify-content-center">
-                <a href="#" class="btn btn-hero btn-hero-primary">Program Studi</a>
-                <a href="#" class="btn btn-hero btn-hero-secondary">Penerimaan Mahasiswa</a>
+                <a href="/profil" class="btn btn-hero btn-hero-primary">Program Studi</a>
+                <a href="/galeri" class="btn btn-hero btn-hero-secondary">Galeri</a>
             </div>
         </div>
     </div>
@@ -355,14 +345,15 @@
     </div>
 </div>
 
-<!-- BERITA -->
+<!-- BERITA dengan Scroll Otomatis -->
 <section class="py-5">
     <div class="container">
         <h2 class="fw-bold text-success text-center section-title">Berita Terbaru</h2>
         <p class="text-muted fs-5 text-center mb-5">Ikuti informasi dan kegiatan terkini Program Studi Teknologi Produksi Tanaman Pangan.</p>
         
-        <div id="scrollBerita" class="scroll-container">
-            @foreach ($beritas as $item)
+        <div class="scroll-container">
+            <div class="berita-wrapper" id="beritaWrapper">
+                @foreach ($beritas as $item)
                 <div class="berita-item">
                     <img src="{{ asset('storage/' . $item->gambar) }}" class="berita-image" alt="{{ $item->judul }}">
                     <div class="berita-content">
@@ -374,12 +365,12 @@
                         <a href="{{ route('berita.show', $item->id) }}" class="btn btn-baca mt-4">Baca Selengkapnya</a>
                     </div>
                 </div>
-            @endforeach
+                @endforeach
+            </div>
         </div>
     </div>
 </section>
 
-<!-- PRESTASI -->
 @if ($prestasis->count())
 <section class="py-5 bg-light">
     <div class="container">
@@ -391,7 +382,7 @@
                 <h4 id="judulPrestasi" class="text-primary fw-bold">{{ $prestasis[0]->nama }}</h4>
                 <small id="tglPrestasi" class="text-muted mb-3">{{ \Carbon\Carbon::parse($prestasis[0]->created_at)->format('d M Y') }}</small>
                 <p id="descPrestasi" class="text-secondary fs-6">{{ \Illuminate\Support\Str::limit(strip_tags($prestasis[0]->deskripsi), 200) }}</p>
-                <a href="#" class="btn btn-baca mt-3">Lihat Prestasi Lainnya</a>
+                <a href="{{ route('prestasi.show', $prestasis[0]->id) }}" class="btn btn-baca mt-3">Lihat Selengkapnya</a>
             </div>
             <div class="prestasi-gambar">
                 @foreach ($prestasis as $key => $prestasi)
@@ -399,7 +390,8 @@
                          class="prestasi-slide {{ $key === 0 ? 'active' : '' }}"
                          data-judul="{{ $prestasi->nama }}"
                          data-tanggal="{{ \Carbon\Carbon::parse($prestasi->created_at)->format('d M Y') }}"
-                         data-deskripsi="{{ strip_tags($prestasi->deskripsi) }}">
+                         data-deskripsi="{{ strip_tags($prestasi->deskripsi) }}"
+                         data-id="{{ $prestasi->id }}">
                 @endforeach
                 <button class="btn-nav left" onclick="prevPrestasi()"><i class="fas fa-chevron-left text-success"></i></button>
                 <button class="btn-nav right" onclick="nextPrestasi()"><i class="fas fa-chevron-right text-success"></i></button>
@@ -425,23 +417,56 @@
     </div>
 </section>
 
-<!-- SCRIPT -->
 <script>
-    // Auto-scroll berita
-    const scrollBerita = document.getElementById('scrollBerita');
-    let scrollAmount = 0;
-    function autoScrollBerita() {
-        if (scrollBerita.scrollWidth > scrollBerita.clientWidth) {
-            scrollAmount += 1;
-            scrollBerita.scrollLeft = scrollAmount;
-            if (scrollAmount >= scrollBerita.scrollWidth - scrollBerita.clientWidth) {
-                scrollAmount = 0;
+    // Auto-scroll berita yang halus
+    const beritaWrapper = document.getElementById('beritaWrapper');
+    const beritaItems = document.querySelectorAll('.berita-item');
+    let currentPosition = 0;
+    let scrollInterval;
+    const scrollSpeed = 3;
+    const pauseDuration = 1000;
+    let isScrolling = true;
+
+    function startAutoScroll() {
+        const itemWidth = beritaItems[0].offsetWidth + 32; // Lebar item + gap
+        const maxScroll = itemWidth * beritaItems.length - beritaWrapper.parentElement.offsetWidth;
+        
+        function scrollStep() {
+            if (!isScrolling) return;
+            
+            currentPosition += scrollSpeed;
+            
+            if (currentPosition >= maxScroll) {
+                clearInterval(scrollInterval);
+                setTimeout(() => {
+                    currentPosition = 0;
+                    beritaWrapper.style.transition = 'none';
+                    beritaWrapper.style.transform = `translateX(0)`;
+                    void beritaWrapper.offsetWidth; // Trigger reflow
+                    beritaWrapper.style.transition = 'transform 1s ease-in-out';
+                    startAutoScroll();
+                }, pauseDuration);
+                return;
             }
+            
+            beritaWrapper.style.transform = `translateX(-${currentPosition}px)`;
         }
+        
+        scrollInterval = setInterval(scrollStep, 16);
     }
-    let beritaInterval = setInterval(autoScrollBerita, 50);
-    scrollBerita.addEventListener('mouseenter', () => clearInterval(beritaInterval));
-    scrollBerita.addEventListener('mouseleave', () => beritaInterval = setInterval(autoScrollBerita, 50));
+
+    // Mulai scroll otomatis
+    startAutoScroll();
+
+    // Jeda saat hover
+    beritaWrapper.addEventListener('mouseenter', () => {
+        isScrolling = false;
+    });
+
+    // Lanjutkan saat mouse leave
+    beritaWrapper.addEventListener('mouseleave', () => {
+        isScrolling = true;
+    });
 
     // Slider Prestasi
     const slides = document.querySelectorAll('.prestasi-slide');
@@ -455,6 +480,7 @@
                 document.getElementById('judulPrestasi').textContent = slide.dataset.judul;
                 document.getElementById('tglPrestasi').textContent = slide.dataset.tanggal;
                 document.getElementById('descPrestasi').textContent = slide.dataset.deskripsi.substring(0, 200) + (slide.dataset.deskripsi.length > 200 ? '...' : '');
+                document.querySelector('.prestasi-deskripsi a').href = `/prestasi/${slide.dataset.id}`;
             }
         });
     }

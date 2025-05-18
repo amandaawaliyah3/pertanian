@@ -6,60 +6,90 @@ use App\Filament\Resources\PrestasiResource\Pages;
 use App\Models\Prestasi;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\DatePicker;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Actions\DeleteBulkAction;
 
 class PrestasiResource extends Resource
 {
     protected static ?string $model = Prestasi::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
-    protected static ?string $navigationLabel = 'Prestasi Mahasiswa';
-    protected static ?string $pluralModelLabel = 'Prestasi Mahasiswa';
+    protected static ?string $navigationIcon = 'heroicon-o-trophy';
+    protected static ?string $modelLabel = 'Prestasi Mahasiswa';
+    protected static ?string $navigationGroup = 'Akademik';
 
     public static function form(Form $form): Form
     {
-        return $form->schema([
-            TextInput::make('judul')
-                ->required()
-                ->maxLength(255),
-
-            Textarea::make('deskripsi')
-                ->required()
-                ->rows(6),
-
-            FileUpload::make('gambar')
-                ->directory('prestasi')
-                ->image()
-                ->nullable(),
-
-            DatePicker::make('tanggal')
-                ->required(),
-        ]);
+        return $form
+            ->schema([
+                TextInput::make('judul') // Diubah dari 'nama' ke 'judul'
+                    ->required()
+                    ->maxLength(255)
+                    ->label('Judul Prestasi'),
+                Textarea::make('deskripsi') // Diubah dari 'prestasi' ke 'deskripsi'
+                    ->required()
+                    ->columnSpanFull()
+                    ->label('Deskripsi Prestasi'),
+                DatePicker::make('tanggal')
+                    ->required()
+                    ->displayFormat('d/m/Y')
+                    ->native(false),
+                FileUpload::make('gambar')
+                    ->image()
+                    ->directory('prestasi')
+                    ->required()
+                    ->label('Foto/Gambar'),
+            ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('judul')->searchable()->sortable(),
-                TextColumn::make('tanggal')->date()->sortable(),
-                ImageColumn::make('gambar')->disk('public'),
+                Tables\Columns\ImageColumn::make('gambar')
+                    ->label('Gambar')
+                    ->circular(),
+                Tables\Columns\TextColumn::make('judul') // Diubah dari 'nama' ke 'judul'
+                    ->searchable()
+                    ->sortable()
+                    ->label('Judul'),
+                Tables\Columns\TextColumn::make('deskripsi') // Diubah dari 'prestasi' ke 'deskripsi'
+                    ->searchable()
+                    ->sortable()
+                    ->limit(50) // Membatasi jumlah karakter yang ditampilkan
+                    ->tooltip(function (Tables\Columns\TextColumn $column): ?string {
+                        $state = $column->getState();
+                        // Menampilkan tooltip jika panjang teks melebihi limit
+                        if (strlen($state) > 50) {
+                            return $state;
+                        }
+                        return null;
+                    })
+                    ->label('Deskripsi'),
+                Tables\Columns\TextColumn::make('tanggal')
+                    ->date('d/m/Y')
+                    ->sortable(),
+            ])
+            ->filters([ 
+                // Filter dapat ditambahkan di sini
             ])
             ->actions([
-                EditAction::make(),
-                DeleteAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
-            ->defaultSort('tanggal', 'desc');
+            ->bulkActions([
+                DeleteBulkAction::make(),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [];
     }
 
     public static function getPages(): array

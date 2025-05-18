@@ -11,20 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('dosens', function (Blueprint $table) {
+           Schema::create('fasilitas', function (Blueprint $table) {
     $table->id();
     $table->string('nama');
-    $table->string('nidn')->unique();
-    $table->string('bidang_keahlian');
-    $table->text('riwayat_pendidikan');
-    $table->text('pengalaman_kerja');
-    $table->text('penelitian_publikasi');
+    $table->string('jenis'); // laboratorium, greenhouse, lahan_praktikum, dll
+    $table->text('deskripsi');
     $table->string('foto')->nullable();
-    $table->string('email')->nullable();
-    $table->string('no_hp')->nullable();
-    $table->boolean('is_kaprodi')->default(false);
+    $table->string('lokasi')->nullable();
+    $table->string('kapasitas')->nullable();
     $table->timestamps();
-    
+
         });
     }
 
@@ -33,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('dosens');
+        Schema::dropIfExists('fasilitas');
     }
 };

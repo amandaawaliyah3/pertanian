@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\BeritaResource\Pages;
 
 use App\Filament\Resources\BeritaResource;
+use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateBerita extends CreateRecord
@@ -11,6 +12,6 @@ class CreateBerita extends CreateRecord
 
     protected function getRedirectUrl(): string
     {
-        return BeritaResource::getUrl();
+        return $this->getResource()::getUrl('index');
     }
 }

@@ -10,10 +10,26 @@ class EditDosen extends EditRecord
 {
     protected static string $resource = DosenResource::class;
 
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
+    protected function getSavedNotificationTitle(): ?string
+    {
+        return 'Data dosen berhasil diperbarui';
+    }
+
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->before(function ($record) {
+                    // Hapus foto saat menghapus record
+                    if ($record->foto) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete('dosen/'.$record->foto);
+                    }
+                }),
         ];
     }
 }

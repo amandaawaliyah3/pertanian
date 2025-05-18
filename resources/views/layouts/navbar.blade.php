@@ -22,25 +22,22 @@
                         Profil
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Visi Misi</a></li>
-                        <li><a class="dropdown-item" href="#">Struktur Organisasi</a></li>
-                        <li><a class="dropdown-item" href="#">Dosen & Staff</a></li>
+                        <li><a class="dropdown-item" href="/profil">Visi Misi</a></li>
+                        <li><a class="dropdown-item" href="/dosen">Struktur Organisasi</a></li>
+                        <li><a class="dropdown-item" href="/dosen">Dosen & Staff</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Akademik</a>
+                    <a class="nav-link" href="/kurikulum">Akademik</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Penelitian</a>
+                    <a class="nav-link" href="/kerjasama">Penelitian</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Pengabdian</a>
+                    <a class="nav-link" href="/kerjasama">Pengabdian</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Galeri</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Kontak</a>
+                    <a class="nav-link" href="/galeri">Galeri</a>
                 </li>
             </ul>
             
@@ -49,12 +46,6 @@
                     <a href="{{ url('/admin') }}" class="btn btn-outline-light me-2">
                         <i class="fas fa-tachometer-alt me-1"></i> Dashboard
                     </a>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="btn btn-warning">
-                            <i class="fas fa-sign-out-alt me-1"></i> Logout
-                        </button>
-                    </form>
                 @else
                     <a href="{{ url('/admin/login') }}" class="btn btn-warning">
                         <i class="fas fa-sign-in-alt me-1"></i> Admin Login

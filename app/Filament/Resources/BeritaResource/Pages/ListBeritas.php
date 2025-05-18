@@ -24,4 +24,12 @@ class ListBeritas extends ListRecords
             Actions\DeleteAction::make(),
         ];
     }
+
+    // Tambahan ini bro, buat bulk delete!
+    protected function getTableBulkActions(): array
+    {
+        return [
+            Actions\DeleteBulkAction::make(),
+        ];
+    }
 }

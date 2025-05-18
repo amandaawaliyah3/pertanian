@@ -24,4 +24,12 @@ class ListPrestasis extends ListRecords
             Actions\DeleteAction::make(),
         ];
     }
+
+    // Tambahan bulk delete juga di sini bro
+    protected function getTableBulkActions(): array
+    {
+        return [
+            Actions\DeleteBulkAction::make(),
+        ];
+    }
 }

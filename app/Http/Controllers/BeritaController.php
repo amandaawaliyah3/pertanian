@@ -1,19 +1,28 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Berita;
+use Illuminate\Support\Str;
 
 class BeritaController extends Controller
 {
-    public function index()
-    {
-        $berita = Berita::latest()->paginate(6);
-        return view('berita.index', compact('berita'));
-    }
-
     public function show($id)
     {
+        // Get the current news with proper error handling
         $berita = Berita::findOrFail($id);
-        return view('berita.beranda', compact('berita'));
+        
+        // Get 3 related news (excluding current one)
+        $relatedBeritas = Berita::where('id', '!=', $id)
+            ->whereNotNull('konten') // Only get news with content
+            ->latest()
+            ->take(3)
+            ->get();
+        
+        return view('berita.show', [
+            'berita' => $berita,
+            'relatedBeritas' => $relatedBeritas,
+            'title' => $berita->judul
+        ]);
     }
 }

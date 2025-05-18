@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Website Resmi Program Studi Teknologi Produksi Tanaman Pangan">
     
-    <title>@yield('title') | TPTP Universitas</title>
+    <title>@yield('title') | TPTP </title>
     
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('images/favicon.ico') }}" type="image/x-icon">
@@ -40,7 +40,10 @@
     @include('layouts.navbar')
     
     <main>
+
         @yield('content')
+
+
     </main>
     
     @include('layouts.footer')
