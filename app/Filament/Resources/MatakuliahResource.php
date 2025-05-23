@@ -9,6 +9,10 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\Action;
+use Filament\Notifications\Notification;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\MataKuliahImport;
 
 class MataKuliahResource extends Resource
 {
@@ -16,6 +20,7 @@ class MataKuliahResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
     protected static ?string $modelLabel = 'Mata Kuliah';
     protected static ?string $navigationGroup = 'Akademik';
+    protected static ?string $navigationLabel = 'Mata Kuliah';
 
     public static function form(Form $form): Form
     {
@@ -24,10 +29,10 @@ class MataKuliahResource extends Resource
                 Forms\Components\Section::make('Informasi Mata Kuliah')
                     ->schema([
                         Forms\Components\TextInput::make('kode')
+                            ->label('Kode MK')
                             ->required()
                             ->maxLength(10)
-                            ->unique(ignoreRecord: true)
-                            ->label('Kode MK'),
+                            ->unique(ignoreRecord: true),
                         Forms\Components\TextInput::make('nama')
                             ->required()
                             ->maxLength(255),
@@ -44,6 +49,7 @@ class MataKuliahResource extends Resource
                             ])
                             ->required(),
                         Forms\Components\Select::make('jenis')
+                            ->label('Jenis')
                             ->options([
                                 'wajib' => 'Wajib',
                                 'pilihan' => 'Pilihan',
@@ -51,41 +57,38 @@ class MataKuliahResource extends Resource
                             ->default('wajib')
                             ->required(),
                         Forms\Components\Select::make('prasyarat')
+                            ->label('Prasyarat (Kode MK)')
                             ->options(MataKuliah::all()->pluck('nama', 'kode'))
                             ->searchable()
-                            ->nullable()
-                            ->label('Prasyarat (Kode MK)'),
+                            ->nullable(),
                     ])->columns(2),
 
                 Forms\Components\Section::make('SKS')
                     ->schema([
                         Forms\Components\TextInput::make('sks_teori')
+                            ->label('SKS Teori')
                             ->required()
                             ->numeric()
                             ->minValue(0)
                             ->maxValue(10)
-                            ->label('SKS Teori')
                             ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                 $set('total_sks', (int) $state + (int) $get('sks_praktikum'));
                             }),
-
                         Forms\Components\TextInput::make('sks_praktikum')
+                            ->label('SKS Praktikum')
                             ->required()
                             ->numeric()
                             ->minValue(0)
                             ->maxValue(10)
-                            ->label('SKS Praktikum')
                             ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                 $set('total_sks', (int) $state + (int) $get('sks_teori'));
                             }),
-
                         Forms\Components\TextInput::make('total_sks')
+                            ->label('Total SKS')
                             ->numeric()
                             ->disabled()
                             ->dehydrated(false)
-                            ->label('Total SKS')
                             ->afterStateHydrated(function (Forms\Components\TextInput $component, $state, $record) {
-                                // Kalau record null (pas create), total_sks = 0
                                 $component->state(
                                     ($record?->sks_teori ?? 0) + ($record?->sks_praktikum ?? 0)
                                 );
@@ -95,12 +98,15 @@ class MataKuliahResource extends Resource
                 Forms\Components\Section::make('Detail Mata Kuliah')
                     ->schema([
                         Forms\Components\Textarea::make('deskripsi')
+                            ->label('Deskripsi')
                             ->required()
                             ->columnSpanFull(),
                         Forms\Components\Textarea::make('capaian_pembelajaran')
+                            ->label('Capaian Pembelajaran')
                             ->required()
                             ->columnSpanFull(),
                         Forms\Components\Textarea::make('referensi')
+                            ->label('Referensi')
                             ->required()
                             ->columnSpanFull(),
                     ]),
@@ -112,9 +118,9 @@ class MataKuliahResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('kode')
+                    ->label('Kode')
                     ->searchable()
-                    ->sortable()
-                    ->label('Kode'),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable()
                     ->sortable(),
@@ -134,9 +140,7 @@ class MataKuliahResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_sks')
                     ->label('Total SKS')
-                    ->state(function (MataKuliah $record) {
-                        return $record->sks_teori + $record->sks_praktikum;
-                    })
+                    ->state(fn (MataKuliah $record) => $record->sks_teori + $record->sks_praktikum)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('prasyarat')
                     ->label('Prasyarat')
@@ -163,6 +167,39 @@ class MataKuliahResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+            ])
+            ->headerActions([
+                Action::make('importExcel')
+                    ->label('Import Excel')
+                    ->icon('heroicon-o-arrow-up-tray')
+                    ->color('primary')
+                    ->modalHeading('Import Data Mata Kuliah')
+                    ->modalDescription('Silakan upload file Excel dengan format yang sesuai')
+                    ->form([
+                        Forms\Components\FileUpload::make('file')
+                            ->label('File Excel')
+                            ->required()
+                            ->acceptedFileTypes([
+                                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                                'application/vnd.ms-excel'
+                            ])
+                    ])
+                    ->action(function (array $data) {
+                        try {
+                            Excel::import(new MataKuliahImport, $data['file']);
+                            Notification::make()
+                                ->title('Import Berhasil')
+                                ->body('Data mata kuliah telah berhasil diimport')
+                                ->success()
+                                ->send();
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title('Import Gagal')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+                        }
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

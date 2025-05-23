@@ -9,6 +9,9 @@ class MataKuliah extends Model
 {
     use HasFactory;
 
+    // Penyesuaian nama tabel eksplisit
+    protected $table = 'mata_kuliahs';
+
     protected $fillable = [
         'kode',
         'nama',
@@ -22,7 +25,7 @@ class MataKuliah extends Model
         'prasyarat', // Kode matkul prasyarat
     ];
 
-    // Hitung total SKS
+    // Akses total SKS
     public function getTotalSksAttribute()
     {
         return $this->sks_teori + $this->sks_praktikum;
