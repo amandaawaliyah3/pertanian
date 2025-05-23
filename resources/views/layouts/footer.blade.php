@@ -1,21 +1,25 @@
 <footer class="bg-dark text-white pt-5 pb-4">
     <div class="container">
+        @php
+            $footer = \App\Models\FooterSetting::first();
+        @endphp
+
         <div class="row">
             <div class="col-md-4 mb-4">
                 <h5 class="fw-bold text-success mb-3">TPTP</h5>
                 <p>Program Studi Teknologi Produksi Tanaman Pangan, Fakultas Pertanian.</p>
                 <div class="social-icons mt-3">
-                    <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="text-white me-3"><i class="fab fa-youtube"></i></a>
+                    <a href="{{ $footer?->facebook_url ?? '#' }}" class="text-white me-3" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="{{ $footer?->twitter_url ?? '#' }}" class="text-white me-3" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="{{ $footer?->instagram_url ?? '#' }}" class="text-white me-3" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="{{ $footer?->youtube_url ?? '#' }}" class="text-white me-3" target="_blank"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
 
             <div class="col-md-2 mb-4">
                 <h5 class="fw-bold text-success mb-3">Tautan Cepat</h5>
                 <ul class="list-unstyled">
-                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Beranda</a></li>
+                    <li class="mb-2"><a href="/" class="text-white text-decoration-none">Beranda</a></li>
                     <li class="mb-2"><a href="/profil" class="text-white text-decoration-none">Profil</a></li>
                     <li class="mb-2"><a href="/kurikulum" class="text-white text-decoration-none">Akademik</a></li>
                     <li class="mb-2"><a href="/kerjasama" class="text-white text-decoration-none">Penelitian</a></li>
@@ -25,23 +29,27 @@
             <div class="col-md-3 mb-4">
                 <h5 class="fw-bold text-success mb-3">Kontak Kami</h5>
                 <ul class="list-unstyled">
-                    <li class="mb-2"><i class="fas fa-map-marker-alt me-2 text-success"></i> Jl. Pertanian No. 123, Kota</li>
-                    <li class="mb-2"><i class="fas fa-phone me-2 text-success"></i> (021) 12345678</li>
-                    <li class="mb-2"><i class="fas fa-envelope me-2 text-success"></i> tptp@universitas.ac.id</li>
+                    <li class="mb-2"><i class="fas fa-map-marker-alt me-2 text-success"></i> {{ $footer?->address ?? 'Alamat belum tersedia' }}</li>
+                    <li class="mb-2"><i class="fas fa-phone me-2 text-success"></i> {{ $footer?->phone ?? '-' }}</li>
+                    <li class="mb-2"><i class="fas fa-envelope me-2 text-success"></i> {{ $footer?->email ?? '-' }}</li>
                 </ul>
             </div>
 
             <div class="col-md-3 mb-4">
                 <h5 class="fw-bold text-success mb-3">Peta Lokasi</h5>
                 <div class="ratio ratio-16x9">
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6452.002451931772!2d117.12053023728268!3d-0.5368218039104918!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df68080334dac99%3A0x5327a22a4028b267!2sPoliteknik%20Pertanian%20Negeri%20Samarinda!5e0!3m2!1sen!2sid!4v1747313095847!5m2!1sen!2sid" 
-                        frameborder="0" 
-                        style="border:0;" 
-                        allowfullscreen="" 
-                        loading="lazy" 
-                        referrerpolicy="no-referrer-when-downgrade">
-                    </iframe>
+                    @if (!empty($footer?->map_embed_url))
+                        <iframe 
+                            src="{{ $footer->map_embed_url }}" 
+                            frameborder="0" 
+                            style="border:0;" 
+                            allowfullscreen 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    @else
+                        <p class="text-white">Peta belum tersedia</p>
+                    @endif
                 </div>
             </div>
         </div>

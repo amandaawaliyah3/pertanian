@@ -1,12 +1,22 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm fixed-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
-            <img src="{{ asset('images/logo-tptp.png') }}" alt="Logo TPTP" height="40" class="me-2">
+            @php
+                $logo = App\Models\SiteLogo::getInstance();
+            @endphp
+            
+            <img src="{{ $logo->logo_url }}" 
+                 alt="Logo {{ $logo->institution_name }}" 
+                 height="40" 
+                 class="me-2">
             <div>
-                <span class="fw-bold">TPTP</span>
-                <small class="d-block" style="font-size: 0.7rem; line-height: 1;">Teknologi Produksi Tanaman Pangan</small>
+                <span class="fw-bold">{{ $logo->institution_name }}</span>
+                <small class="d-block" style="font-size: 0.7rem; line-height: 1;">
+                    {{ $logo->institution_subname }}
+                </small>
             </div>
         </a>
+
         
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
             <span class="navbar-toggler-icon"></span>

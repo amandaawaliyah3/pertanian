@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('site_logos', function (Blueprint $table) {
+            $table->id();
+            $table->string('logo_path')->nullable()->comment('Path penyimpanan logo');
+            $table->string('institution_name')->default('TPTP');
+            $table->string('institution_subname')->default('Teknologi Produksi Tanaman Pangan');
+            $table->timestamps();
+        });
+
+        // Insert default record
+        DB::table('site_logos')->insert([
+            'logo_path' => null,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('site_logos');
+    }
+};
