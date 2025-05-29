@@ -8,123 +8,143 @@ use Illuminate\Support\Facades\Storage;
 
 class DosenController extends Controller
 {
+    /**
+     * Tampilkan semua dosen.
+     */
     public function index()
     {
-        $dosens = Dosen::orderBy('nama')->paginate(10);
-        return view('dosen.index', compact('dosens'));
+        $dosens = Dosen::all();
+        return view('dosens.index', compact('dosens'));
     }
 
+    /**
+     * Tampilkan form tambah dosen.
+     */
     public function create()
     {
-        return view('dosen.create');
+        return view('dosens.create');
     }
 
+    /**
+     * Simpan dosen baru ke database.
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nidn' => 'required|unique:dosens|max:20',
-            'nama' => 'required|max:255',
-            'email' => 'nullable|email',
-            'no_hp' => 'nullable|max:20',
-            'bidang_keahlian' => 'required',
-            'riwayat_pendidikan' => 'nullable',
-            'pengalaman_kerja' => 'nullable',
-            'penelitian' => 'nullable',
-            'publikasi' => 'nullable',
-            'foto' => 'nullable|image|max:2048',
-            'is_kaprodi' => 'boolean'
+            'nama'             => 'required|string|max:255',
+            'nip'              => 'required|string|max:255|unique:dosens',
+            'nidn'             => 'required|string|max:255',
+            'no_hp'            => 'nullable|string|max:20',
+            'email'            => 'nullable|email|max:255',
+            'bidang_keahlian'  => 'nullable|string',
+            'riwayat_pendidikan'   => 'nullable|string',
+            'pengalaman_kerja'     => 'nullable|string',
+            'foto'             => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
+            'penelitian'       => 'nullable|array',
+            'publikasi'        => 'nullable|array',
         ]);
 
-        // Handle upload foto
+        // Upload foto jika ada
         if ($request->hasFile('foto')) {
-            $validated['foto'] = $request->file('foto')->store('dosen', 'public');
+            $validated['foto'] = $request->file('foto')->store('dosen');
         }
 
-        // Jika set sebagai kaprodi, nonaktifkan kaprodi sebelumnya
-        if ($request->is_kaprodi) {
-            Dosen::where('is_kaprodi', true)->update(['is_kaprodi' => false]);
-        }
+        // Pakai casting di model untuk penelitian & publikasi
+        $validated['penelitian'] = $request->input('penelitian', []);
+        $validated['publikasi']  = $request->input('publikasi', []);
 
         Dosen::create($validated);
 
-        return redirect()->route('dosen.index')->with('success', 'Dosen berhasil ditambahkan');
+        return redirect()
+            ->route('dosens.index')
+            ->with('success', 'Dosen berhasil ditambahkan.');
     }
 
-    public function show(Dosen $dosen)
+    /**
+     * Tampilkan detail satu dosen.
+     */
+    public function show($id)
     {
-        return view('dosen.show', compact('dosen'));
+        $dosen = Dosen::findOrFail($id);
+        return view('dosens.show', compact('dosen'));
     }
 
+    /**
+     * Tampilkan form edit dosen.
+     */
     public function edit(Dosen $dosen)
     {
-        return view('dosen.edit', compact('dosen'));
+        return view('dosens.edit', compact('dosen'));
     }
 
+    /**
+     * Update data dosen.
+     */
     public function update(Request $request, Dosen $dosen)
     {
         $validated = $request->validate([
-            'nidn' => 'required|max:20|unique:dosens,nidn,'.$dosen->id,
-            'nama' => 'required|max:255',
-            'email' => 'nullable|email',
-            'no_hp' => 'nullable|max:20',
-            'bidang_keahlian' => 'required',
-            'riwayat_pendidikan' => 'nullable',
-            'pengalaman_kerja' => 'nullable',
-            'penelitian' => 'nullable',
-            'publikasi' => 'nullable',
-            'foto' => 'nullable|image|max:2048',
-            'is_kaprodi' => 'boolean'
+            'nama'             => 'required|string|max:255',
+            'nip'              => 'required|string|max:255|unique:dosens,nip,' . $dosen->id,
+            'nidn'             => 'required|string|max:255',
+            'no_hp'            => 'nullable|string|max:20',
+            'email'            => 'nullable|email|max:255',
+            'bidang_keahlian'  => 'nullable|string',
+            'riwayat_pendidikan'   => 'nullable|string',
+            'pengalaman_kerja'     => 'nullable|string',
+            'foto'             => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
+            'penelitian'       => 'nullable|array',
+            'publikasi'        => 'nullable|array',
         ]);
 
-        // Handle upload foto baru
+        // Jika ada unggah foto baru, hapus yang lama lalu simpan
         if ($request->hasFile('foto')) {
-            // Hapus foto lama jika ada
             if ($dosen->foto) {
-                Storage::disk('public')->delete($dosen->foto);
+                Storage::delete($dosen->foto);
             }
-            $validated['foto'] = $request->file('foto')->store('dosen', 'public');
-        } else {
-            // Pertahankan foto lama jika tidak ada upload baru
-            $validated['foto'] = $dosen->foto;
+            $validated['foto'] = $request->file('foto')->store('dosen');
         }
 
-        // Jika set sebagai kaprodi, nonaktifkan kaprodi sebelumnya
-        if ($request->is_kaprodi) {
-            Dosen::where('is_kaprodi', true)
-                ->where('id', '!=', $dosen->id)
-                ->update(['is_kaprodi' => false]);
-        }
+        $validated['penelitian'] = $request->input('penelitian', []);
+        $validated['publikasi']  = $request->input('publikasi', []);
 
         $dosen->update($validated);
 
-        return redirect()->route('dosen.index')->with('success', 'Data dosen berhasil diperbarui');
+        return redirect()
+            ->route('dosens.index')
+            ->with('success', 'Data dosen berhasil diperbarui.');
     }
 
+    /**
+     * Hapus data dosen.
+     */
     public function destroy(Dosen $dosen)
     {
-        // Hapus foto jika ada
         if ($dosen->foto) {
-            Storage::disk('public')->delete($dosen->foto);
+            Storage::delete($dosen->foto);
         }
 
         $dosen->delete();
 
-        return redirect()->route('dosen.index')->with('success', 'Dosen berhasil dihapus');
+        return redirect()
+            ->route('dosens.index')
+            ->with('success', 'Dosen berhasil dihapus.');
     }
 
-    // Bulk action untuk set kaprodi
-    public function setKaprodi(Request $request)
+    /**
+     * Set seorang dosen sebagai Kaprodi.
+     */
+    public function setKaprodi($id)
     {
-        $request->validate([
-            'dosen_id' => 'required|exists:dosens,id'
-        ]);
+        // Reset semua
+        Dosen::where('is_kaprodi', true)
+            ->update(['is_kaprodi' => false]);
 
-        // Nonaktifkan semua kaprodi terlebih dahulu
-        Dosen::where('is_kaprodi', true)->update(['is_kaprodi' => false]);
+        // Tandai yang dipilih
+        $dosen = Dosen::findOrFail($id);
+        $dosen->update(['is_kaprodi' => true]);
 
-        // Aktifkan dosen yang dipilih
-        Dosen::find($request->dosen_id)->update(['is_kaprodi' => true]);
-
-        return back()->with('success', 'Kaprodi berhasil diubah');
+        return redirect()
+            ->route('dosens.index')
+            ->with('success', 'Dosen berhasil dijadikan Kaprodi.');
     }
 }

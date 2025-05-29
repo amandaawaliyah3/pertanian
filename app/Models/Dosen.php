@@ -2,88 +2,115 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
 class Dosen extends Model
 {
+    use HasFactory;
+
+    protected $table = 'dosens';
+    protected $primaryKey = 'id';
+
     protected $fillable = [
-        'nidn', 'nama', 'email', 'no_hp', 'bidang_keahlian',
-        'riwayat_pendidikan', 'pengalaman_kerja', 
-        'penelitian', 'publikasi', 'foto', 'is_kaprodi'
+        'foto',
+        'nama',
+        'nip',
+        'bidang_keahlian',
+        'riwayat_pendidikan',
+        'pengalaman_kerja',
+        'penelitian',
+        'publikasi',
+        'email',
+        'no_hp',
+        'is_kaprodi',
     ];
 
     protected $casts = [
+        'penelitian' => 'array',
+        'publikasi' => 'array',
         'is_kaprodi' => 'boolean',
-        // Jika bidang_keahlian disimpan dalam bentuk JSON, aktifkan baris ini:
-        // 'bidang_keahlian' => 'array',
     ];
 
+    protected $appends = ['foto_url', 'penelitian_count', 'publikasi_count'];
+
     /**
-     * Accessor untuk mendapatkan URL foto dosen.
+     * Get the foto URL attribute
      */
     public function getFotoUrlAttribute()
     {
-        if (empty($this->foto)) {
-            return asset('images/default-avatar.jpg');
+        if (!$this->foto) {
+            return null;
         }
-
-        return Storage::disk('public')->exists('dosen/' . $this->foto)
-            ? asset('storage/dosen/' . $this->foto)
-            : asset('images/default-avatar.jpg');
+        
+        return Storage::disk('public')->exists($this->foto) 
+            ? Storage::disk('public')->url($this->foto)
+            : null;
     }
 
     /**
-     * Mengembalikan bidang keahlian dalam bentuk array.
+     * Get penelitian count attribute
+     */
+    public function getPenelitianCountAttribute()
+    {
+        return is_array($this->penelitian) ? count($this->penelitian) : 0;
+    }
+
+    /**
+     * Get publikasi count attribute
+     */
+    public function getPublikasiCountAttribute()
+    {
+        return is_array($this->publikasi) ? count($this->publikasi) : 0;
+    }
+
+    /**
+     * Set bidang keahlian attribute
+     */
+    public function setBidangKeahlianAttribute($value)
+    {
+        if (is_array($value)) {
+            $this->attributes['bidang_keahlian'] = implode(', ', $value);
+        } else {
+            $this->attributes['bidang_keahlian'] = $value;
+        }
+    }
+
+    /**
+     * Get bidang keahlian as array
      */
     public function getBidangKeahlianArrayAttribute()
     {
-        return $this->formatTextToArray($this->bidang_keahlian);
-    }
-
-    /**
-     * Mengembalikan riwayat pendidikan dalam bentuk array.
-     */
-    public function getRiwayatPendidikanArrayAttribute()
-    {
-        return $this->formatTextToArray($this->riwayat_pendidikan);
-    }
-
-    /**
-     * Mengembalikan pengalaman kerja dalam bentuk array.
-     */
-    public function getPengalamanKerjaArrayAttribute()
-    {
-        return $this->formatTextToArray($this->pengalaman_kerja);
-    }
-
-    /**
-     * Mengembalikan daftar penelitian dalam bentuk array.
-     */
-    public function getPenelitianArrayAttribute()
-    {
-        return $this->formatTextToArray($this->penelitian);
-    }
-
-    /**
-     * Mengembalikan daftar publikasi dalam bentuk array.
-     */
-    public function getPublikasiArrayAttribute()
-    {
-        return $this->formatTextToArray($this->publikasi);
-    }
-
-    /**
-     * Helper untuk memecah teks dengan newline menjadi array.
-     */
-    protected function formatTextToArray($text)
-    {
-        if (empty($text)) {
+        if (empty($this->bidang_keahlian)) {
             return [];
         }
+        return explode(', ', $this->bidang_keahlian);
+    }
 
-        return array_filter(
-            array_map('trim', explode("\n", $text))
-        );
+    /**
+     * Set foto attribute with proper path
+     */
+    public function setFotoAttribute($value)
+    {
+        if ($value && !str_starts_with($value, 'dosen/')) {
+            $this->attributes['foto'] = 'dosen/' . ltrim($value, '/');
+        } else {
+            $this->attributes['foto'] = $value;
+        }
+    }
+
+    /**
+     * Boot method for model events
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function($dosen) {
+            if ($dosen->foto) {
+                Storage::disk('public')->delete($dosen->foto);
+            }
+        });
     }
 }

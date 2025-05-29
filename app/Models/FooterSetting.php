@@ -14,7 +14,7 @@ class FooterSetting extends Model
         'address',
         'phone',
         'email',
-        'map_embed_url'
+        
     ];
 
     protected static function booted()

@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\DosenResource\Pages;
-use App\Filament\Resources\DosenResource\RelationManagers;
 use App\Models\Dosen;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -34,6 +33,8 @@ class DosenResource extends Resource
                             ->directory('dosen')
                             ->disk('public')
                             ->imageEditor()
+                            ->maxSize(2048)
+                            ->acceptedFileTypes(['image/jpeg', 'image/png'])
                             ->helperText('Ukuran maksimal 2MB. Format: JPG, PNG')
                             ->columnSpanFull(),
 
@@ -42,17 +43,17 @@ class DosenResource extends Resource
                             ->maxLength(255)
                             ->placeholder('Contoh: Dr. John Doe, S.Kom., M.Kom.'),
 
-                        Forms\Components\TextInput::make('nidn')
-                            ->label('NIDN')
+                        Forms\Components\TextInput::make('nip')
+                            ->label('NIP')
                             ->required()
                             ->maxLength(20)
                             ->unique(ignoreRecord: true)
                             ->placeholder('Contoh: 1234567890'),
 
-                        Forms\Components\TagsInput::make('bidang_keahlian')
-                            ->placeholder('Tambahkan bidang keahlian')
-                            ->helperText('Tekan Enter setelah menulis setiap bidang keahlian')
-                            ->nestedRecursiveRules(['max:100']),
+                        Forms\Components\Textarea::make('bidang_keahlian')
+                            ->label('Bidang Keahlian')
+                            ->placeholder('Masukkan bidang keahlian, dipisahkan dengan koma')
+                            ->columnSpanFull(),
                     ])
                     ->columns(2),
 
@@ -74,7 +75,7 @@ class DosenResource extends Resource
 
                 Forms\Components\Section::make('Penelitian')
                     ->schema([
-                        Forms\Components\Repeater::make('penelitian_publikasi.penelitian')
+                        Forms\Components\Repeater::make('penelitian')
                             ->label('')
                             ->schema([
                                 Forms\Components\TextInput::make('judul')
@@ -110,7 +111,7 @@ class DosenResource extends Resource
 
                 Forms\Components\Section::make('Publikasi')
                     ->schema([
-                        Forms\Components\Repeater::make('penelitian_publikasi.publikasi')
+                        Forms\Components\Repeater::make('publikasi')
                             ->label('')
                             ->schema([
                                 Forms\Components\TextInput::make('judul')
@@ -153,10 +154,12 @@ class DosenResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('email')
                             ->email()
+                            ->maxLength(255)
                             ->placeholder('email@contoh.com'),
 
                         Forms\Components\TextInput::make('no_hp')
                             ->tel()
+                            ->maxLength(20)
                             ->placeholder('081234567890'),
                     ])
                     ->columns(2),
@@ -173,36 +176,38 @@ class DosenResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('foto')
                     ->label('Foto')
-                    ->getStateUsing(fn ($record) => $record->foto_url)
+                    ->disk('public')
                     ->circular()
                     ->width(50)
                     ->height(50),
-                    
+
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable()
                     ->sortable(),
-                    
-                Tables\Columns\TextColumn::make('nidn')
-                    ->label('NIDN')
+
+                Tables\Columns\TextColumn::make('nip')
+                    ->label('NIP')
                     ->searchable(),
-                    
+
                 Tables\Columns\TextColumn::make('bidang_keahlian')
                     ->searchable()
                     ->limit(25),
-                    
+
                 Tables\Columns\TextColumn::make('penelitian_count')
                     ->label('Jml. Penelitian')
+                    ->getStateUsing(fn ($record) => count($record->penelitian ?? []))
                     ->sortable(),
-                    
+
                 Tables\Columns\TextColumn::make('publikasi_count')
                     ->label('Jml. Publikasi')
+                    ->getStateUsing(fn ($record) => count($record->publikasi ?? []))
                     ->sortable(),
-                    
+
                 Tables\Columns\IconColumn::make('is_kaprodi')
                     ->label('Kaprodi')
                     ->boolean()
                     ->sortable(),
-                    
+
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Terakhir Diupdate')
                     ->dateTime()
@@ -216,14 +221,14 @@ class DosenResource extends Resource
                         true => 'Kaprodi',
                         false => 'Dosen Biasa',
                     ]),
-                    
+
                 Tables\Filters\Filter::make('memiliki_penelitian')
                     ->label('Memiliki Penelitian')
-                    ->query(fn (Builder $query): Builder => $query->where('penelitian_publikasi', 'like', '%penelitian%')),
-                    
+                    ->query(fn (Builder $query): Builder => $query->whereNotNull('penelitian')),
+
                 Tables\Filters\Filter::make('memiliki_publikasi')
                     ->label('Memiliki Publikasi')
-                    ->query(fn (Builder $query): Builder => $query->where('penelitian_publikasi', 'like', '%publikasi%')),
+                    ->query(fn (Builder $query): Builder => $query->whereNotNull('publikasi')),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -231,9 +236,8 @@ class DosenResource extends Resource
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make()
                         ->before(function ($record) {
-                            // Hapus foto saat menghapus record
                             if ($record->foto) {
-                                Storage::disk('public')->delete('dosen/'.$record->foto);
+                                Storage::disk('public')->delete('dosen/' . $record->foto);
                             }
                         })
                         ->successNotificationTitle('Dosen berhasil dihapus'),
@@ -243,22 +247,19 @@ class DosenResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
                         ->before(function ($records) {
-                            // Hapus semua foto dosen yang dipilih
                             foreach ($records as $record) {
                                 if ($record->foto) {
-                                    Storage::disk('public')->delete('dosen/'.$record->foto);
+                                    Storage::disk('public')->delete('dosen/' . $record->foto);
                                 }
                             }
                         })
                         ->successNotificationTitle('Dosen terpilih berhasil dihapus'),
-                        
+
                     Tables\Actions\BulkAction::make('set_kaprodi')
                         ->label('Set sebagai Kaprodi')
                         ->icon('heroicon-o-check-circle')
                         ->action(function (Collection $records) {
-                            // Nonaktifkan semua kaprodi terlebih dahulu
                             Dosen::where('is_kaprodi', true)->update(['is_kaprodi' => false]);
-                            // Aktifkan yang dipilih
                             $records->each->update(['is_kaprodi' => true]);
                         })
                         ->deselectRecordsAfterCompletion()
@@ -275,9 +276,7 @@ class DosenResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            // Relation managers bisa ditambahkan di sini jika diperlukan
-        ];
+        return [];
     }
 
     public static function getPages(): array

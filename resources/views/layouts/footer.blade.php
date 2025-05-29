@@ -34,23 +34,6 @@
                     <li class="mb-2"><i class="fas fa-envelope me-2 text-success"></i> {{ $footer?->email ?? '-' }}</li>
                 </ul>
             </div>
-
-            <div class="col-md-3 mb-4">
-                <h5 class="fw-bold text-success mb-3">Peta Lokasi</h5>
-                <div class="ratio ratio-16x9">
-                    @if (!empty($footer?->map_embed_url))
-                        <iframe 
-                            src="{{ $footer->map_embed_url }}" 
-                            frameborder="0" 
-                            style="border:0;" 
-                            allowfullscreen 
-                            loading="lazy" 
-                            referrerpolicy="no-referrer-when-downgrade">
-                        </iframe>
-                    @else
-                        <p class="text-white">Peta belum tersedia</p>
-                    @endif
-                </div>
             </div>
         </div>
 
