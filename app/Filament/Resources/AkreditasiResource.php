@@ -14,7 +14,6 @@ class AkreditasiResource extends Resource
     protected static ?string $model = Akreditasi::class;
     protected static ?string $navigationIcon = 'heroicon-o-check-badge';
     protected static ?string $navigationLabel = 'Akreditasi';
-    protected static ?string $pluralModelLabel = 'Akreditasi';
 
     public static function form(Form $form): Form
     {

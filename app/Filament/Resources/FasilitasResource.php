@@ -16,7 +16,7 @@ class FasilitasResource extends Resource
     protected static ?string $model = Fasilitas::class;
     protected static ?string $navigationIcon = 'heroicon-o-building-library';
     protected static ?string $modelLabel = 'Fasilitas';
-    protected static ?string $navigationGroup = 'Profil Prodi';
+    protected static ?string $navigationGroup = 'PERTANIAN';
     protected static ?string $navigationLabel = 'Manajemen Fasilitas';
 
     public static function form(Form $form): Form
@@ -30,17 +30,17 @@ class FasilitasResource extends Resource
                     ->required()
                     ->maxSize(1024)
                     ->columnSpanFull(),
-                    
+
                 Forms\Components\TextInput::make('nama')
                     ->label('Nama Fasilitas')
                     ->required()
                     ->maxLength(255),
-                    
+
                 Forms\Components\Select::make('jenis')
                     ->label('Jenis Fasilitas')
                     ->options(Fasilitas::JENIS)
                     ->required(),
-                    
+
                 Forms\Components\Textarea::make('deskripsi')
                     ->label('Deskripsi')
                     ->required()
@@ -58,12 +58,12 @@ class FasilitasResource extends Resource
                     ->height(60)
                     ->width(60)
                     ->square(),
-                    
+
                 Tables\Columns\TextColumn::make('nama')
                     ->label('Nama')
                     ->searchable()
                     ->sortable(),
-                    
+
                 Tables\Columns\TextColumn::make('jenis')
                     ->label('Jenis')
                     ->badge()
@@ -74,7 +74,7 @@ class FasilitasResource extends Resource
                         'ruang_kelas' => 'primary',
                         default => 'gray',
                     }),
-                    
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->dateTime()

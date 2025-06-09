@@ -16,7 +16,7 @@ class FooterSettingResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-cog';
     protected static ?string $modelLabel = 'Pengaturan Footer';
     protected static ?string $navigationLabel = 'Pengaturan Footer';
-    protected static ?string $navigationGroup = 'Pengaturan';
+    protected static ?string $navigationGroup = 'PENGATURAN';
     protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
@@ -28,24 +28,19 @@ class FooterSettingResource extends Resource
                         ->label('Facebook URL')
                         ->placeholder('https://facebook.com/username')
                         ->maxLength(255),
-                        
-                    Forms\Components\TextInput::make('twitter_url')
-                        ->label('Twitter URL')
-                        ->placeholder('https://twitter.com/username')
-                        ->maxLength(255),
-                        
+
                     Forms\Components\TextInput::make('instagram_url')
                         ->label('Instagram URL')
                         ->placeholder('https://instagram.com/username')
                         ->maxLength(255),
-                        
+
                     Forms\Components\TextInput::make('youtube_url')
                         ->label('YouTube URL')
                         ->placeholder('https://youtube.com/channel/...')
                         ->maxLength(255),
                 ])
                 ->columns(2),
-                
+
             Forms\Components\Section::make('Informasi Kontak')
                 ->schema([
                     Forms\Components\Textarea::make('address')
@@ -54,13 +49,13 @@ class FooterSettingResource extends Resource
                         ->maxLength(500)
                         ->columnSpanFull()
                         ->placeholder('Jl. Contoh No. 123, Kota, Provinsi, Kode Pos'),
-                        
+
                     Forms\Components\TextInput::make('phone')
                         ->label('Nomor Telepon')
                         ->required()
                         ->maxLength(20)
                         ->placeholder('081234567890'),
-                        
+
                     Forms\Components\TextInput::make('email')
                         ->label('Alamat Email')
                         ->email()
@@ -79,15 +74,15 @@ class FooterSettingResource extends Resource
                     ->label('Terakhir Diupdate')
                     ->dateTime()
                     ->sortable(),
-                    
+
                 Tables\Columns\TextColumn::make('address')
                     ->label('Alamat')
                     ->limit(30)
                     ->tooltip(fn ($record) => $record->address),
-                    
+
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Telepon'),
-                    
+
                 Tables\Columns\TextColumn::make('email')
                     ->label('Email'),
             ])

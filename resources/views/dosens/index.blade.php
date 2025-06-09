@@ -7,8 +7,7 @@
     <div class="container mt-5 pt-5">
 
         <div class="mb-5 text-center">
-            <h2 class="fw-bold text-success section-title">Struktur Organisasi Dosen & Staf</h2>
-            <p class="text-muted fs-5">Struktur Program Studi Teknologi Produksi Tanaman Pangan</p>
+            <h2 class="fw-bold text-success section-title">Data Dosen</h2>
         </div>
 
         {{-- Kaprodi --}}
@@ -41,7 +40,7 @@
         {{-- Dosen dan Staf --}}
         <div class="card shadow-sm border-0">
             <div class="card-header bg-light border-bottom border-success">
-                <h5 class="mb-0 text-success"><i class="fas fa-users me-2"></i>Dosen & Staf Lainnya</h5>
+                <h5 class="mb-0 text-success"><i class="fas fa-users me-2"></i>Data Dosen</h5>
             </div>
             <div class="card-body">
                 @if($dosenLain->count())
@@ -71,7 +70,7 @@
                 </div>
                 @else
                 <div class="text-center p-4">
-                    <p class="text-muted"><i class="fas fa-info-circle me-2"></i>Belum ada data dosen/staf</p>
+                    <p class="text-muted"><i class="fas fa-info-circle me-2"></i>Belum ada data dosen</p>
                 </div>
                 @endif
             </div>

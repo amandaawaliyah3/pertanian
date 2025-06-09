@@ -10,7 +10,7 @@ class SiteLogo extends Model
     protected $fillable = [
         'id', // Tambahkan ini
         'logo_path',
-        'institution_name', 
+        'institution_name',
         'institution_subname'
     ];
 
@@ -19,7 +19,7 @@ class SiteLogo extends Model
     public function getLogoUrlAttribute()
     {
         if (!$this->logo_path) {
-            return asset('images/logo-tptp-default.png');
+            return asset('images/logo-Pertanian-default.png');
         }
         return Storage::url($this->logo_path);
     }
@@ -44,8 +44,8 @@ class SiteLogo extends Model
             ['id' => 1],
             [
                 'logo_path' => null,
-                'institution_name' => 'TPTP',
-                'institution_subname' => 'Teknologi Produksi Tanaman Pangan'
+                'institution_name' => 'Jurusan Pertanian',
+                'institution_subname' => 'Politeknik Pertanian Negeri Samarinda'
             ]
         );
     }

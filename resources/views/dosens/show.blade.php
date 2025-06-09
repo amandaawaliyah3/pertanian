@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Profil Dosen TPTP')
+@section('title', 'Data Dosen Pertanian')
 
 @section('content')
 <div class="py-5 bg-light">

@@ -1,21 +1,20 @@
 <?php
 
-use App\Models\Berita;
-use App\Filament\Resources\BeritaResource;
-use App\Filament\Resources\GaleriResource;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\BerandaController;
-use App\Http\Controllers\BeritaController;
-use App\Http\Controllers\KurikulumController;
-use App\Http\Controllers\DosenController;
-use App\Http\Controllers\FasilitasController;
-use App\Http\Controllers\GaleriController;
-use App\Http\Controllers\KerjasamaController;
-use App\Http\Controllers\ProfilController;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\PrestasiController;
-
-
+use App\Http\Controllers\{
+    BerandaController,
+    BeritaController,
+    DosenController,
+    FasilitasController,
+    GaleriController,
+    KerjasamaController,
+    ProfilController,
+    PrestasiController,
+    Diploma3ProdiController,
+    Diploma4ProdiController,
+    JalurMasukController,
+    PlpController,
+};
 
 // Halaman Beranda
 Route::get('/', [BerandaController::class, 'index'])->name('beranda');
@@ -24,46 +23,24 @@ Route::get('/', [BerandaController::class, 'index'])->name('beranda');
 Route::get('/berita', [BeritaController::class, 'index'])->name('berita.index');
 Route::get('/berita/{id}', [BeritaController::class, 'show'])->name('berita.show');
 
-//prestasi
+// Prestasi
 Route::get('/prestasi/{id}', [PrestasiController::class, 'show'])->name('prestasi.show');
 
-// Admin panel (Filament)
-Route::middleware(['auth'])->group(function () {
-    // Berita Admin
-    Route::get('/admin/berita', [BeritaResource::class, 'index'])->name('berita.index.admin');
-    Route::get('/admin/berita/create', [BeritaResource::class, 'create'])->name('berita.create.admin');
-    Route::get('/admin/berita/{id}/edit', [BeritaResource::class, 'edit'])->name('berita.edit.admin');
-
-    // Galeri Admin
-    Route::get('/admin/galeri', [GaleriResource::class, 'index'])->name('galeri.index.admin');
-    Route::get('/admin/galeri/create', [GaleriResource::class, 'create'])->name('galeri.create.admin');
-    Route::get('/admin/galeri/{id}/edit', [GaleriResource::class, 'edit'])->name('galeri.edit.admin');
-});
-
-// Kurikulum
-Route::get('/kurikulum', [KurikulumController::class, 'index'])->name('kurikulum');
-Route::get('/kurikulum/semester-{semester}', [KurikulumController::class, 'show'])->name('kurikulum.show');
-
 // Dosen
-Route::get('/dosen', [DosenController::class, 'index'])->name('dosen');
-Route::get('/dosen/{dosen}', [DosenController::class, 'show'])->name('dosen.show');
-// Tambahkan ini di routes/web.php
-Route::resource('dosen', \App\Http\Controllers\DosenController::class);
-// Route khusus untuk bulk action
-Route::post('/dosen/set-kaprodi', [DosenController::class, 'setKaprodi'])
-    ->name('dosen.set-kaprodi');
+Route::resource('dosen', DosenController::class)->only(['index', 'show']);
+Route::post('/dosen/set-kaprodi', [DosenController::class, 'setKaprodi'])->name('dosen.set-kaprodi');
 
 // Fasilitas
 Route::get('/fasilitas', [FasilitasController::class, 'index'])->name('fasilitas.index');
 
-// 🖼️ Galeri Routes
+// Galeri
 Route::prefix('galeri')->name('galeri.')->group(function () {
-    // Public Routes
+    // Public
     Route::get('/', [GaleriController::class, 'index'])->name('index');
     Route::get('/kategori/{kategori}', [GaleriController::class, 'byCategory'])->name('category');
     Route::get('/{id}', [GaleriController::class, 'show'])->name('show');
 
-    // Auth Routes
+    // Hanya untuk yang login
     Route::middleware(['auth'])->group(function () {
         Route::get('/create', [GaleriController::class, 'create'])->name('create');
         Route::post('/', [GaleriController::class, 'store'])->name('store');
@@ -79,10 +56,31 @@ Route::prefix('api')->group(function () {
     Route::get('/galeri/{id}', [GaleriController::class, 'apiShow']);
 });
 
- //kerjasama
+// Kerjasama
 Route::get('/kerjasama', [KerjasamaController::class, 'index'])->name('kerjasama.index');
 Route::get('/kerjasama/{id}', [KerjasamaController::class, 'show'])->name('kerjasama.show');
 
-//statis
+// Profil
 Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
 
+// Diploma 3
+Route::prefix('d3')->name('d3.')->group(function () {
+    Route::get('/', [Diploma3ProdiController::class, 'index'])->name('index');
+    Route::get('/{id}', [Diploma3ProdiController::class, 'show'])->name('show');
+});
+
+// Diploma 4
+Route::prefix('d4')->name('d4.')->group(function () {
+    Route::get('/', [Diploma4ProdiController::class, 'index'])->name('index');
+    Route::get('/{id}', [Diploma4ProdiController::class, 'show'])->name('show');
+});
+
+// Jalur Masuk
+Route::get('/jalurmasuk', [JalurMasukController::class, 'index'])->name('jalurmasuk.index');
+Route::get('/jalurmasuk/{id}', [JalurMasukController::class, 'show'])->name('jalurmasuk.show');
+
+// PLP
+Route::prefix('plp')->name('plp.')->group(function () {
+    Route::get('/', [PlpController::class, 'index'])->name('index');
+    Route::get('/{id}', [PlpController::class, 'show'])->name('show');
+});

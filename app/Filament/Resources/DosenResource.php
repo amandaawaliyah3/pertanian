@@ -17,8 +17,8 @@ class DosenResource extends Resource
 {
     protected static ?string $model = Dosen::class;
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
-    protected static ?string $modelLabel = 'Dosen';
-    protected static ?string $navigationGroup = 'Akademik';
+    protected static ?string $modelLabel = 'Data Dosen';
+    protected static ?string $navigationGroup = 'PERTANIAN';
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
@@ -164,8 +164,8 @@ class DosenResource extends Resource
                     ])
                     ->columns(2),
 
-                Forms\Components\Toggle::make('is_kaprodi')
-                    ->label('Koordinator Prodi?')
+                Forms\Components\Toggle::make('is_kajur')
+                    ->label('Koordinator Jurusan?')
                     ->inline(false),
             ]);
     }

@@ -114,8 +114,8 @@
 <section class="hero-section py-5 text-center bg-light">
     <div class="container">
          <div class="container mt-5 pt-5">
-        <h1 class="display-5 fw-bold text-dark">Profil Program Studi</h1>
-        <p class="lead text-muted">Pelajari sejarah, visi misi, dan akreditasi dari Program Studi Teknologi Produksi Tanaman Pangan.</p>
+        <h1 class="display-5 fw-bold text-dark">Jurusan Pertanian</h1>
+        <p class="lead text-muted">Pelajari sejarah, visi misi, dan akreditasi dari Jurusan Pertanian.</p>
     </div>
 </section>
 

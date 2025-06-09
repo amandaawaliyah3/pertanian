@@ -16,6 +16,8 @@ class VisiMisiResource extends Resource
     protected static ?string $navigationLabel = 'Visi & Misi';
     protected static ?string $pluralModelLabel = 'Visi Misi';
 
+    protected static ?string $navigationGroup = 'PERTANIAN';
+
     public static function form(Form $form): Form
     {
         return $form->schema([

@@ -12,8 +12,8 @@ return new class extends Migration
         Schema::create('site_logos', function (Blueprint $table) {
             $table->id();
             $table->string('logo_path')->nullable()->comment('Path penyimpanan logo');
-            $table->string('institution_name')->default('TPTP');
-            $table->string('institution_subname')->default('Teknologi Produksi Tanaman Pangan');
+            $table->string('institution_name')->default('Jurusan Pertanian');
+            $table->string('institution_subname')->default('Politeknik Pertanian Negeri Samarinda');
             $table->timestamps();
         });
 

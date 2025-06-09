@@ -17,6 +17,7 @@ class SejarahResource extends Resource
     protected static ?string $navigationLabel = 'Sejarah';
     protected static ?string $pluralModelLabel = 'Sejarah';
     protected static ?string $modelLabel = 'Sejarah';
+    protected static ?string $navigationGroup = 'PERTANIAN';
 
     public static function form(Form $form): Form
     {

@@ -6,28 +6,27 @@
 
         <div class="row">
             <div class="col-md-4 mb-4">
-                <h5 class="fw-bold text-success mb-3">TPTP</h5>
-                <p>Program Studi Teknologi Produksi Tanaman Pangan, Fakultas Pertanian.</p>
+                <h5 class="fw-bold text-success mb-3">Jurusan Pertanian</h5>
+                <p>Politeknik Pertanian Negeri Samarinda.</p>
                 <div class="social-icons mt-3">
                     <a href="{{ $footer?->facebook_url ?? '#' }}" class="text-white me-3" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                    <a href="{{ $footer?->twitter_url ?? '#' }}" class="text-white me-3" target="_blank"><i class="fab fa-twitter"></i></a>
                     <a href="{{ $footer?->instagram_url ?? '#' }}" class="text-white me-3" target="_blank"><i class="fab fa-instagram"></i></a>
                     <a href="{{ $footer?->youtube_url ?? '#' }}" class="text-white me-3" target="_blank"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
 
             <div class="col-md-2 mb-4">
-                <h5 class="fw-bold text-success mb-3">Tautan Cepat</h5>
+                <h5 class="fw-bold text-success mb-3">Tentang Pertanian</h5>
                 <ul class="list-unstyled">
                     <li class="mb-2"><a href="/" class="text-white text-decoration-none">Beranda</a></li>
-                    <li class="mb-2"><a href="/profil" class="text-white text-decoration-none">Profil</a></li>
-                    <li class="mb-2"><a href="/kurikulum" class="text-white text-decoration-none">Akademik</a></li>
-                    <li class="mb-2"><a href="/kerjasama" class="text-white text-decoration-none">Penelitian</a></li>
+                    <li class="mb-2"><a href="/profil" class="text-white text-decoration-none">Visi & Misi</a></li>
+                    <li class="mb-2"><a href="/fasilitas" class="text-white text-decoration-none">Fasilitas Kampus</a></li>
+                    <li class="mb-2"><a href="/berita" class="text-white text-decoration-none">Seputar kampus</a></li>
                 </ul>
             </div>
 
-            <div class="col-md-3 mb-4">
-                <h5 class="fw-bold text-success mb-3">Kontak Kami</h5>
+            <div class="col-md-3 mb-3">
+                <h5 class="fw-bold text-success mb-4">Kontak Kami</h5>
                 <ul class="list-unstyled">
                     <li class="mb-2"><i class="fas fa-map-marker-alt me-2 text-success"></i> {{ $footer?->address ?? 'Alamat belum tersedia' }}</li>
                     <li class="mb-2"><i class="fas fa-phone me-2 text-success"></i> {{ $footer?->phone ?? '-' }}</li>
@@ -41,10 +40,10 @@
 
         <div class="row">
             <div class="col-md-6 text-center text-md-start">
-                <p class="mb-0">&copy; {{ date('Y') }} Program Studi TPTP. All rights reserved.</p>
+                <p class="mb-0">&copy; {{ date('Y') }} Jurusan Pertanian. All rights reserved.</p>
             </div>
             <div class="col-md-6 text-center text-md-end">
-                <p class="mb-0">Developed with <i class="fas fa-heart text-danger"></i> by Tim TPTP</p>
+                <p class="mb-0">Developed with <i class="fas fa-heart text-danger"></i> by Tim Jurusan Pertanian</p>
             </div>
         </div>
     </div>

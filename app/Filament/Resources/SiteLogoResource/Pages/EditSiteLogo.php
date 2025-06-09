@@ -22,8 +22,8 @@ class EditSiteLogo extends EditRecord
             ['id' => 1],
             [
                 'logo_path' => null,
-                'institution_name' => 'TPTP',
-                'institution_subname' => 'Teknologi Produksi Tanaman Pangan',
+                'institution_name' => 'Jurusan Pertanian',
+                'institution_subname' => 'Politeknik Pertanian Negeri Samarinda',
                 'created_at' => now(),
                 'updated_at' => now()
             ]
@@ -43,8 +43,8 @@ class EditSiteLogo extends EditRecord
                     }
                     $record->update([
                         'logo_path' => null,
-                        'institution_name' => 'TPTP',
-                        'institution_subname' => 'Teknologi Produksi Tanaman Pangan'
+                        'institution_name' => 'Jurusan Pertanian',
+                        'institution_subname' => 'Politeknik Pertanian Negeri Samarinda'
                     ]);
                     $this->form->fill($record->fresh()->toArray());
                 })

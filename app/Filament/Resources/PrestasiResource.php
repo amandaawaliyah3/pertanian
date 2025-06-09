@@ -21,7 +21,7 @@ class PrestasiResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-trophy';
     protected static ?string $modelLabel = 'Prestasi Mahasiswa';
-    protected static ?string $navigationGroup = 'Akademik';
+    protected static ?string $navigationGroup = 'PERTANIAN';
 
     public static function form(Form $form): Form
     {
@@ -75,7 +75,7 @@ class PrestasiResource extends Resource
                     ->date('d/m/Y')
                     ->sortable(),
             ])
-            ->filters([ 
+            ->filters([
                 // Filter dapat ditambahkan di sini
             ])
             ->actions([

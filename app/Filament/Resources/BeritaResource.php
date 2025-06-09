@@ -22,6 +22,7 @@ class BeritaResource extends Resource
     protected static ?string $pluralModelLabel = 'Berita';
     protected static ?string $modelLabel = 'Berita';
 
+
     public static function form(Form $form): Form
     {
         return $form->schema([
@@ -105,8 +106,8 @@ class BeritaResource extends Resource
                             ->orderBy('tanggal')
                             ->get()
                             ->mapWithKeys(function ($item) {
-                                $date = $item->tanggal instanceof \Carbon\Carbon 
-                                    ? $item->tanggal 
+                                $date = $item->tanggal instanceof \Carbon\Carbon
+                                    ? $item->tanggal
                                     : Carbon::parse($item->tanggal);
                                 return [$item->tanggal => $date->format('d/m/Y')];
                             })

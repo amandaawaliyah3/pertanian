@@ -9,33 +9,56 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
 use App\Filament\Resources\KerjasamaResource\Pages;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\MataKuliahImport;
+use Illuminate\Support\Str;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class KerjasamaResource extends Resource
 {
     protected static ?string $model = Kerjasama::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    protected static ?string $navigationGroup = 'Manajemen Data';
-    protected static ?string $navigationLabel = 'Kerjasama';
+    protected static ?string $navigationGroup = 'MITRA';
+    protected static ?string $navigationLabel = 'Kerja sama';
 
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Section::make('Data Kerjasama')
+            Section::make('Data Kerja sama')
                 ->schema([
-                    TextInput::make('nama_mitra')->required(),
-                    TextInput::make('jenis_kerjasama')->required(),
-                    DatePicker::make('tanggal_mulai')->required(),
-                    DatePicker::make('tanggal_selesai')->required(),
-                    Textarea::make('keterangan')->columnSpanFull(),
-                ])->columns(2),
+                    FileUpload::make('logo')
+                        ->image()
+                        ->directory('kerjasama-logos')
+                        ->getUploadedFileNameForStorageUsing(
+                            fn (TemporaryUploadedFile $file): string => (string) str(Str::slug($file->getClientOriginalName()))
+                                ->prepend(time().'-')
+                                ->append('.'.$file->getClientOriginalExtension())
+                        )
+                        ->imageEditor()
+                        ->columnSpanFull(),
+
+                    TextInput::make('nama_mitra')
+                        ->required(),
+
+                    TextInput::make('jenis_kerjasama')
+                        ->required(),
+
+                    DatePicker::make('tanggal_mulai')
+                        ->required(),
+
+                    DatePicker::make('tanggal_selesai')
+                        ->required(),
+
+                    Textarea::make('keterangan')
+                        ->columnSpanFull(),
+                ])
+                ->columns(2),
 
             Section::make('Penelitian')
                 ->schema([
@@ -72,10 +95,19 @@ class KerjasamaResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            TextColumn::make('nama_mitra')->searchable(),
+            ImageColumn::make('logo')
+                ->circular(),
+
+            TextColumn::make('nama_mitra')
+                ->searchable(),
+
             TextColumn::make('jenis_kerjasama'),
-            TextColumn::make('tanggal_mulai')->date(),
-            TextColumn::make('tanggal_selesai')->date(),
+
+            TextColumn::make('tanggal_mulai')
+                ->date(),
+
+            TextColumn::make('tanggal_selesai')
+                ->date(),
         ])
         ->actions([
             Tables\Actions\EditAction::make(),

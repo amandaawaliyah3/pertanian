@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Galeri Kegiatan TPTP')
+@section('title', 'Galeri Kegiatan pertanian')
 
 @section('content')
 <style>
@@ -95,10 +95,10 @@
         <div class="col-sm-6 col-md-4 col-lg-3">
             <div class="card gallery-card h-100">
                 <a href="{{ route('galeri.show', $galeri->id) }}" class="text-decoration-none text-dark">
-                    <img 
-                        src="{{ $galeri->foto_url }}" 
-                        alt="{{ $galeri->judul }}" 
-                        class="gallery-image" 
+                    <img
+                        src="{{ $galeri->foto_url }}"
+                        alt="{{ $galeri->judul }}"
+                        class="gallery-image"
                         loading="lazy"
                         onerror="this.onerror=null;this.src='{{ asset('storage/galeri/default-gallery.jpg') }}'">
                     <div class="card-body d-flex flex-column">

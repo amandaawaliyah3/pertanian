@@ -17,7 +17,7 @@ class SiteLogoResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-photo';
     protected static ?string $modelLabel = 'Logo Website';
     protected static ?string $navigationLabel = 'Pengaturan Logo';
-    protected static ?string $navigationGroup = 'Konfigurasi';
+    protected static ?string $navigationGroup = 'PENGATURAN';
 
     public static function form(Form $form): Form
     {
@@ -31,11 +31,11 @@ class SiteLogoResource extends Resource
                         ->imageEditor()
                         ->maxSize(2048)
                         ->required(),
-                        
+
                     Forms\Components\TextInput::make('institution_name')
                         ->label('Nama Institusi')
                         ->required(),
-                        
+
                     Forms\Components\TextInput::make('institution_subname')
                         ->label('Deskripsi Institusi')
                         ->required()
@@ -50,10 +50,10 @@ class SiteLogoResource extends Resource
                 Tables\Columns\ImageColumn::make('logo_path')
                     ->label('Logo')
                     ->disk('public'),
-                    
+
                 Tables\Columns\TextColumn::make('institution_name')
                     ->label('Nama Institusi'),
-                    
+
                 Tables\Columns\TextColumn::make('institution_subname')
                     ->label('Deskripsi')
             ])

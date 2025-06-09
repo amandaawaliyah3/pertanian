@@ -18,7 +18,7 @@ class GaleriResource extends Resource
     protected static ?string $model = Galeri::class;
     protected static ?string $navigationIcon = 'heroicon-o-photo';
     protected static ?string $modelLabel = 'Galeri';
-    protected static ?string $navigationGroup = 'Profil Prodi';
+    protected static ?string $navigationGroup = 'PERTANIAN';
 
     public static function form(Form $form): Form
     {

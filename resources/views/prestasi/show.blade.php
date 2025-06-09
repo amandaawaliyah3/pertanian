@@ -9,12 +9,12 @@
         padding: 80px 0 40px;
         margin-bottom: 60px;
     }
-    
+
     .prestasi-container {
         max-width: 1000px;
         margin: 0 auto;
     }
-    
+
     .prestasi-card {
         border: none;
         border-radius: 16px;
@@ -22,23 +22,23 @@
         box-shadow: 0 10px 30px rgba(0,0,0,0.08);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    
+
     .prestasi-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 15px 40px rgba(0,0,0,0.12);
     }
-    
+
     .prestasi-image {
         width: 100%;
         height: 400px;
         object-fit: cover;
         object-position: center;
     }
-    
+
     .prestasi-body {
         padding: 40px;
     }
-    
+
     .prestasi-title {
         font-size: 2.2rem;
         font-weight: 700;
@@ -46,32 +46,32 @@
         margin-bottom: 15px;
         line-height: 1.3;
     }
-    
+
     .prestasi-meta {
         display: flex;
         align-items: center;
         margin-bottom: 25px;
         color: #6c757d;
     }
-    
+
     .prestasi-meta i {
         margin-right: 8px;
         color: #198754;
     }
-    
+
     .prestasi-content {
         font-size: 1.1rem;
         line-height: 1.8;
         color: #495057;
     }
-    
+
     .prestasi-content img {
         max-width: 100%;
         height: auto;
         border-radius: 8px;
         margin: 25px 0;
     }
-    
+
     .btn-kembali {
         background-color: #198754;
         color: white;
@@ -83,31 +83,31 @@
         display: inline-flex;
         align-items: center;
     }
-    
+
     .btn-kembali:hover {
         background-color: #157347;
         color: white;
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(25,135,84,0.3);
     }
-    
+
     .btn-kembali i {
         margin-right: 8px;
     }
-    
+
     @media (max-width: 768px) {
         .prestasi-hero {
             padding: 60px 0 30px;
         }
-        
+
         .prestasi-image {
             height: 250px;
         }
-        
+
         .prestasi-body {
             padding: 30px;
         }
-        
+
         .prestasi-title {
             font-size: 1.8rem;
         }
@@ -118,7 +118,7 @@
 <section class="prestasi-hero">
     <div class="container text-center">
         <h1 class="display-5 fw-bold text-success mb-3">Detail Prestasi</h1>
-        <p class="lead text-muted">Prestasi membanggakan dari mahasiswa kami</p>
+        <p class="lead text-muted">Prestasi membanggakan dari mahasiswa Jurusan Pertanian</p>
     </div>
 </section>
 
@@ -126,14 +126,14 @@
 <div class="container prestasi-container">
     <div class="prestasi-card">
         @if($prestasi->gambar)
-        <img src="{{ asset('storage/' . $prestasi->gambar) }}" 
-             class="prestasi-image" 
+        <img src="{{ asset('storage/' . $prestasi->gambar) }}"
+             class="prestasi-image"
              alt="{{ $prestasi->judul }}">
         @endif
-        
+
         <div class="prestasi-body">
             <h2 class="prestasi-title">{{ $prestasi->judul }}</h2>
-            
+
             <div class="prestasi-meta">
                 <i class="fas fa-calendar-alt"></i>
                 <span>
@@ -144,11 +144,11 @@
                     @endif
                 </span>
             </div>
-            
+
             <div class="prestasi-content">
                 {!! $prestasi->deskripsi !!}
             </div>
-            
+
             <a href="{{ route('beranda') }}" class="btn btn-kembali">
                 <i class="fas fa-arrow-left"></i> Kembali ke Beranda
             </a>
@@ -161,14 +161,14 @@
 <section class="py-5 bg-light">
     <div class="container">
         <h2 class="text-center mb-5 fw-bold text-success">Prestasi Lainnya</h2>
-        
+
         <div class="row g-4">
             @foreach($relatedPrestasi as $item)
             <div class="col-md-4">
                 <div class="card h-100 border-0 shadow-sm">
                     @if($item->gambar)
-                    <img src="{{ asset('storage/' . $item->gambar) }}" 
-                         class="card-img-top" 
+                    <img src="{{ asset('storage/' . $item->gambar) }}"
+                         class="card-img-top"
                          alt="{{ $item->judul }}"
                          style="height: 200px; object-fit: cover;">
                     @endif
@@ -185,7 +185,7 @@
                         </p>
                     </div>
                     <div class="card-footer bg-white border-0">
-                        <a href="{{ route('prestasi.show', $item->id) }}" 
+                        <a href="{{ route('prestasi.show', $item->id) }}"
                            class="btn btn-sm btn-outline-success">
                             Lihat Detail
                         </a>
@@ -206,7 +206,7 @@
             content.style.opacity = '0';
             content.style.transform = 'translateY(20px)';
             content.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            
+
             setTimeout(() => {
                 content.style.opacity = '1';
                 content.style.transform = 'translateY(0)';
