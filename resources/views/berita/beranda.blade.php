@@ -18,10 +18,10 @@
         background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/gedung pertanian.jpeg');
         background-size: cover;
         background-position: center;
-        color: white;
-        padding: 8rem 0;
+        color: rgb(255, 255, 255);
+        padding: 10rem 0;
         position: relative;
-        margin-bottom: 2rem;
+        margin-bottom: 5rem;
         min-height: 70vh;
         display: flex;
         align-items: center;
@@ -58,20 +58,29 @@
         margin: 0 10px 10px 0;
     }
 
+    .navbar {
+         padding: 1rem 1rem;
+         background: linear-gradient(to right,  #2e7d32,  #2e7d32);
+}
+    .nav-item {
+         margin: 0.5rem;
+}
+
+
     .btn-hero-primary {
-        background-color: var(--accent-color);
-        color: var(--dark-color);
-        border: 2px solid var(--accent-color);
+        background-color: transparent;
+        color: rgb(241, 234, 234);
+        border: 2px solid white;
     }
 
     .btn-hero-primary:hover {
-        background-color: transparent;
-        color: var(--accent-color);
+        background-color: white;
+        color: var(--dark-color);
     }
 
     .btn-hero-secondary {
         background-color: transparent;
-        color: white;
+        color: rgb(241, 234, 234);
         border: 2px solid white;
     }
 
@@ -106,13 +115,13 @@
     }
 
     .info-box {
-        background-color: white;
+        background-color: rgb(213, 226, 226);
         border-radius: 12px;
         padding: 1.5rem;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         height: 100%;
-        border-top: 3px solid var(--primary-color);
+        border-top: 5px solid var(--primary-color);
         margin-bottom: 20px;
     }
 
@@ -123,7 +132,7 @@
 
     .info-box-icon {
         font-size: 2rem;
-        color: var(--primary-color);
+        color: #7f1320;
         margin-bottom: 1rem;
     }
 
@@ -136,7 +145,7 @@
 
     .info-box-text {
         font-size: 0.9rem;
-        color: #6c757d;
+        color: #403839;
     }
 
     /* BERITA */

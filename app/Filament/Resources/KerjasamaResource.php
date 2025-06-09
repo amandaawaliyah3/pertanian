@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Models\Kerjasama;
 use Filament\Forms\Form;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -58,61 +57,31 @@ class KerjasamaResource extends Resource
                     Textarea::make('keterangan')
                         ->columnSpanFull(),
                 ])
-                ->columns(2),
-
-            Section::make('Penelitian')
-                ->schema([
-                    Repeater::make('penelitians')
-                        ->relationship()
-                        ->schema([
-                            TextInput::make('judul')->required(),
-                            TextInput::make('peneliti')->required(),
-                            DatePicker::make('tahun')->required(),
-                        ])
-                        ->columns(2)
-                        ->defaultItems(0)
-                        ->collapsible()
-                        ->createItemButtonLabel('Tambah Penelitian'),
-                ]),
-
-            Section::make('Pengabdian')
-                ->schema([
-                    Repeater::make('pengabdians')
-                        ->relationship()
-                        ->schema([
-                            TextInput::make('judul')->required(),
-                            TextInput::make('pelaksana')->required(),
-                            DatePicker::make('tahun')->required(),
-                        ])
-                        ->columns(2)
-                        ->defaultItems(0)
-                        ->collapsible()
-                        ->createItemButtonLabel('Tambah Pengabdian'),
-                ]),
         ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table->columns([
-            ImageColumn::make('logo')
-                ->circular(),
+        return $table
+            ->columns([
+                ImageColumn::make('logo')
+                    ->circular(),
 
-            TextColumn::make('nama_mitra')
-                ->searchable(),
+                TextColumn::make('nama_mitra')
+                    ->searchable(),
 
-            TextColumn::make('jenis_kerjasama'),
+                TextColumn::make('jenis_kerjasama'),
 
-            TextColumn::make('tanggal_mulai')
-                ->date(),
+                TextColumn::make('tanggal_mulai')
+                    ->date(),
 
-            TextColumn::make('tanggal_selesai')
-                ->date(),
-        ])
-        ->actions([
-            Tables\Actions\EditAction::make(),
-            Tables\Actions\DeleteAction::make(),
-        ]);
+                TextColumn::make('tanggal_selesai')
+                    ->date(),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ]);
     }
 
     public static function getPages(): array

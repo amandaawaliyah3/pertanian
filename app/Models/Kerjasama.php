@@ -16,14 +16,4 @@ class Kerjasama extends Model
         'tanggal_selesai',
         'keterangan',
     ];
-
-    public function penelitians()
-    {
-        return $this->hasMany(Penelitian::class);
-    }
-
-    public function pengabdians()
-    {
-        return $this->hasMany(Pengabdian::class);
-    }
 }

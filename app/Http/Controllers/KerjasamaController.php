@@ -31,8 +31,7 @@ class KerjasamaController extends Controller
             $query->whereYear('tanggal_mulai', $request->tahun);
         }
 
-        $kerjasamas = $query->with(['penelitians', 'pengabdians'])
-                          ->latest('tanggal_mulai')
+        $kerjasamas = $query->latest('tanggal_mulai')
                           ->paginate(10)
                           ->withQueryString();
 
@@ -53,15 +52,7 @@ class KerjasamaController extends Controller
 
     public function show($id)
     {
-        $kerjasama = Kerjasama::with([
-            'penelitians' => function($query) {
-                $query->latest()->take(3);
-            },
-            'pengabdians' => function($query) {
-                $query->latest()->take(3);
-            },
-            'dokumen'
-        ])->findOrFail($id);
+        $kerjasama = Kerjasama::findOrFail($id);
 
         return view('kerjasama.show', [
             'kerjasama' => $kerjasama,

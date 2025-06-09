@@ -84,3 +84,7 @@ Route::prefix('plp')->name('plp.')->group(function () {
     Route::get('/', [PlpController::class, 'index'])->name('index');
     Route::get('/{id}', [PlpController::class, 'show'])->name('show');
 });
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

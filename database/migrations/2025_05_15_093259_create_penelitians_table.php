@@ -6,26 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('penelitians', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('kerjasama_id')->constrained()->onDelete('cascade');
-    $table->string('judul');
-    $table->string('peneliti');
-    $table->date('tahun');
-    $table->timestamps();
-        });
+        Schema::dropIfExists('penelitians');
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('penelitians');
+        // Opsional: bisa dibuat rollback-nya jika diperlukan
+        Schema::create('penelitians', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('kerjasama_id')->constrained()->onDelete('cascade');
+            $table->string('judul');
+            $table->string('peneliti');
+            $table->date('tahun');
+            $table->timestamps();
+        });
     }
 };

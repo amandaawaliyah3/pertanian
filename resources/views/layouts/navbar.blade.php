@@ -53,13 +53,6 @@
                     </ul>
                 </li>
 
-
-               <li class="nav-item">
-                    <a class="nav-link" href="/kerjasama">
-                        <i class="fas fa-flask me-1"></i> PENELITIAN
-                    </a>
-                </li>
-
                 <li class="nav-item">
                     <a class="nav-link" href="/kerjasama">
                         <i class="fas fa-hands-helping me-1"></i> MITRA KERJA

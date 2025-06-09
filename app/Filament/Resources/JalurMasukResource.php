@@ -84,6 +84,7 @@ class JalurMasukResource extends Resource
                 ->query(fn (Builder $query) => $query->where('aktif', true)),
         ])
         ->actions([
+            Tables\Actions\ViewAction::make(), // Aktifkan tombol "View"
             Tables\Actions\EditAction::make(),
             Tables\Actions\DeleteAction::make(),
         ])
@@ -95,7 +96,10 @@ class JalurMasukResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ViewJalurMasuk::route('/'),
+            'index' => Pages\ListJalurMasuks::route('/'),
+            'create' => Pages\CreateJalurMasuk::route('/create'),
+            'view' => Pages\ViewJalurMasuk::route('/{record}'),
+            'edit' => Pages\EditJalurMasuk::route('/{record}/edit'),
         ];
     }
 }

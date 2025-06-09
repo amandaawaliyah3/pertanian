@@ -8,7 +8,7 @@ class JalurMasukController extends Controller
 {
     public function index()
     {
-        $jalurs = JalurMasuk::where('aktif', true)
+        $jalurs = JalurMasuk::where('status', true)
             ->orderByDesc('tanggal_buka')
             ->get();
 
