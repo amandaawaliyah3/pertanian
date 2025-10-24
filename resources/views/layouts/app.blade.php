@@ -19,14 +19,17 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- icon -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
     @stack('styles')
 
     <style>
         :root {
-            --primary-color: #198754;
+            --primary-color: #2e7d32;
             --secondary-color: #f8f9fa;
             --accent-color: #ffc107;
-            --dark-color: #343a40;
+            --dark-color: #403834;
             --light-color: #ffffff;
         }
 
@@ -34,6 +37,21 @@
             font-family: 'Poppins', sans-serif;
             overflow-x: hidden;
         }
+
+        .custom-navbar {
+            background: linear-gradient(to right, #2e7d32, #2e7d32) !important;
+            border: none !important;
+        }
+
+        .custom-navbar .nav-link,
+        .custom-navbar .navbar-brand {
+            color: white !important;
+        }
+
+        .custom-navbar .nav-link:hover {
+            color: #d4fcd7 !important;
+        }
+
     </style>
 </head>
 <body>

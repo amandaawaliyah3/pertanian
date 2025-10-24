@@ -132,7 +132,7 @@
 
     .info-box-icon {
         font-size: 2rem;
-        color: #7f1320;
+        color: #2e7d32;
         margin-bottom: 1rem;
     }
 
@@ -262,45 +262,14 @@
             <h1 class="hero-title">Selamat Datang di Jurusan Pertanian</h1>
             <p class="hero-subtitle">Politeknik Pertanian Negeri Samarinda</p>
             <div class="d-flex flex-wrap justify-content-center">
-                <a href="/berita" class="btn btn-hero btn-hero-primary">Seputar Kampus</a>
+                <a href="/galeri" class="btn btn-hero btn-hero-primary">Galeri</a>
                 <a href="/fasilitas" class="btn btn-hero btn-hero-secondary">Fasilitas</a>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Info Boxes -->
-<div class="container info-boxes">
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="info-box">
-                <div class="info-box-icon text-center">
-                    <i class="fas fa-graduation-cap"></i>
-                </div>
-                <h4 class="info-box-title text-center">Akreditasi</h4>
-                <p class="info-box-text text-center">Jurusan Pertanian kami telah terakreditasi oleh BAN-PT dengan standar pendidikan tinggi yang berkualitas.</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="info-box">
-                <div class="info-box-icon text-center">
-                    <i class="fas fa-flask"></i>
-                </div>
-                <h4 class="info-box-title text-center">Laboratorium Modern</h4>
-                <p class="info-box-text text-center">Didukung dengan fasilitas laboratorium modern untuk mendukung proses belajar mengajar dan penelitian.</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="info-box">
-                <div class="info-box-icon text-center">
-                    <i class="fas fa-handshake"></i>
-                </div>
-                <h4 class="info-box-title text-center">Kerjasama Industri</h4>
-                <p class="info-box-text text-center">Bekerjasama dengan berbagai industri dan instansi untuk pengembangan kompetensi mahasiswa.</p>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- BERITA -->
 <section class="berita-section">
@@ -315,7 +284,7 @@
                     <img src="{{ asset('storage/' . $item->gambar) }}" class="berita-image" alt="{{ $item->judul }}">
                     <div class="berita-content">
                         <h5 class="berita-title">{{ $item->judul }}</h5>
-                        <small class="berita-date">{{ $item->created_at->format('d M Y') }}</small>
+                        <small class="berita-date">{{ $item->tanggal->format('d M Y') }}</small>
                         <p class="berita-excerpt">{{ \Illuminate\Support\Str::limit(strip_tags($item->isi), 100) }}</p>
                         <a href="{{ route('berita.show', $item->id) }}" class="btn-baca">Baca Selengkapnya</a>
                     </div>
@@ -326,31 +295,7 @@
     </div>
 </section>
 
-@if ($prestasis->count())
-<!-- PRESTASI -->
-<section class="prestasi-section">
-    <div class="container">
-        <h2 class="fw-bold text-center section-title">Prestasi Mahasiswa</h2>
-        <p class="text-muted text-center mb-4">Prestasi-prestasi membanggakan yang telah diraih oleh mahasiswa Jurusan Pertanian.</p>
 
-        <div class="row g-4">
-            @foreach ($prestasis as $prestasi)
-            <div class="col-md-4">
-                <div class="prestasi-card">
-                    <img src="{{ asset('storage/' . $prestasi->gambar) }}" class="prestasi-image" alt="{{ $prestasi->nama }}">
-                    <div class="prestasi-content">
-                        <h5 class="berita-title">{{ $prestasi->nama }}</h5>
-                        <small class="berita-date">{{ \Carbon\Carbon::parse($prestasi->created_at)->format('d M Y') }}</small>
-                        <p class="berita-excerpt">{{ \Illuminate\Support\Str::limit(strip_tags($prestasi->deskripsi), 100) }}</p>
-                        <a href="{{ route('prestasi.show', $prestasi->id) }}" class="btn-baca">Lihat Detail</a>
-                    </div>
-                </div>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-@endif
 
 <script>
     // Animasi scroll

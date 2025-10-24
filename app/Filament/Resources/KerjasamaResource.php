@@ -17,6 +17,7 @@ use Filament\Tables\Columns\ImageColumn;
 use App\Filament\Resources\KerjasamaResource\Pages;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class KerjasamaResource extends Resource
 {
@@ -31,16 +32,34 @@ class KerjasamaResource extends Resource
         return $form->schema([
             Section::make('Data Kerja sama')
                 ->schema([
-                    FileUpload::make('logo')
-                        ->image()
-                        ->directory('kerjasama-logos')
-                        ->getUploadedFileNameForStorageUsing(
-                            fn (TemporaryUploadedFile $file): string => (string) str(Str::slug($file->getClientOriginalName()))
-                                ->prepend(time().'-')
-                                ->append('.'.$file->getClientOriginalExtension())
-                        )
-                        ->imageEditor()
-                        ->columnSpanFull(),
+                    tap(FileUpload::make('logo'), function (FileUpload $fileUpload) {
+                        $fileUpload->image()
+                            ->directory('kerjasama-logos')
+                            
+                            // FIX: Menggunakan penamaan file UUID sederhana (paling stabil)
+                            ->getUploadedFileNameForStorageUsing(
+                                fn (TemporaryUploadedFile $file): string => (string) Str::uuid() . '.' . $file->getClientOriginalExtension()
+                            )
+                            
+                            ->imageEditor()
+                            ->columnSpanFull()
+                            
+                            // 1. Izinkan null saat Edit
+                            ->nullable(fn (string $operation): bool => $operation === 'edit')
+                            
+                            // 2. Hook untuk menghapus logo lama saat diganti/di-reset
+                            ->mutateDehydratedState(function ($state, $old, $livewire) {
+                                if ($livewire instanceof \Filament\Resources\Pages\EditRecord) {
+                                    $oldRecord = $livewire->getRecord();
+                                    
+                                    if ($oldRecord->logo && $oldRecord->logo !== $state) {
+                                        Storage::disk('public')->delete($oldRecord->logo);
+                                    }
+                                }
+                                return $state;
+                            });
+                        return $fileUpload;
+                    }),
 
                     TextInput::make('nama_mitra')
                         ->required(),
@@ -65,6 +84,7 @@ class KerjasamaResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('logo')
+                    ->disk('public') // FIX: Agar logo tampil di tabel
                     ->circular(),
 
                 TextColumn::make('nama_mitra')
@@ -80,7 +100,27 @@ class KerjasamaResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                
+                // FIX: Hapus logo saat Single Delete
+                Tables\Actions\DeleteAction::make()
+                    ->before(function (Kerjasama $record) {
+                        if ($record->logo) {
+                            Storage::disk('public')->delete($record->logo); 
+                        }
+                    }),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    // FIX: Hapus logo saat Bulk Delete
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function (\Illuminate\Support\Collection $records) {
+                            $records->each(function (Kerjasama $record) {
+                                if ($record->logo) {
+                                    Storage::disk('public')->delete($record->logo);
+                                }
+                            });
+                        }),
+                ]),
             ]);
     }
 

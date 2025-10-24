@@ -22,7 +22,6 @@ class BeritaResource extends Resource
     protected static ?string $pluralModelLabel = 'Berita';
     protected static ?string $modelLabel = 'Berita';
 
-
     public static function form(Form $form): Form
     {
         return $form->schema([
@@ -31,6 +30,7 @@ class BeritaResource extends Resource
                 ->maxLength(255)
                 ->columnSpanFull(),
 
+            // FileUpload tanpa hook penghapusan (ditangani di Model)
             Forms\Components\FileUpload::make('gambar')
                 ->directory('berita')
                 ->image()
@@ -44,19 +44,8 @@ class BeritaResource extends Resource
                 ->required()
                 ->columnSpanFull()
                 ->toolbarButtons([
-                    'blockquote',
-                    'bold',
-                    'bulletList',
-                    'codeBlock',
-                    'h2',
-                    'h3',
-                    'italic',
-                    'link',
-                    'orderedList',
-                    'redo',
-                    'strike',
-                    'underline',
-                    'undo',
+                    'blockquote', 'bold', 'bulletList', 'codeBlock', 'h2', 'h3', 'italic',
+                    'link', 'orderedList', 'redo', 'strike', 'underline', 'undo',
                 ]),
 
             Forms\Components\DatePicker::make('tanggal')
@@ -100,28 +89,28 @@ class BeritaResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('tanggal')
                     ->options(function () {
+                        // ✅ PERBAIKAN: Menggunakan format string Y-m-d sebagai KEY untuk filter
                         return Berita::query()
                             ->select('tanggal')
                             ->distinct()
                             ->orderBy('tanggal')
                             ->get()
-                            ->mapWithKeys(function ($item) {
-                                $date = $item->tanggal instanceof \Carbon\Carbon
-                                    ? $item->tanggal
-                                    : Carbon::parse($item->tanggal);
-                                return [$item->tanggal => $date->format('d/m/Y')];
-                            })
+                            ->mapWithKeys(fn ($item) => [
+                                $item->tanggal->format('Y-m-d') => $item->tanggal->format('d/m/Y') 
+                            ])
                             ->toArray();
                     })
                     ->label('Filter Tanggal'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                // Penghapusan file ditangani oleh Model Event
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    // Penghapusan file ditangani oleh Model Event
                     Tables\Actions\DeleteBulkAction::make()
                         ->label('Hapus Data Terpilih')
                         ->requiresConfirmation(),

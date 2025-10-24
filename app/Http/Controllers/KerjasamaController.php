@@ -15,9 +15,10 @@ class KerjasamaController extends Controller
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
+                // Diasumsikan kolom 'lokasi' ada untuk filter
                 $q->where('nama_mitra', 'like', '%'.$search.'%')
                   ->orWhere('keterangan', 'like', '%'.$search.'%')
-                  ->orWhere('lokasi', 'like', '%'.$search.'%');
+                  ->orWhere('lokasi', 'like', '%'.$search.'%'); 
             });
         }
 
@@ -32,8 +33,8 @@ class KerjasamaController extends Controller
         }
 
         $kerjasamas = $query->latest('tanggal_mulai')
-                          ->paginate(10)
-                          ->withQueryString();
+                            ->paginate(10)
+                            ->withQueryString();
 
         $jenisOptions = Kerjasama::distinct('jenis_kerjasama')
                                ->pluck('jenis_kerjasama');
@@ -46,7 +47,8 @@ class KerjasamaController extends Controller
             'kerjasamas' => $kerjasamas,
             'jenisOptions' => $jenisOptions,
             'tahunOptions' => $tahunOptions,
-            'title' => 'Kerjasama'
+            // Mengirimkan Judul Spesifik Halaman
+            'title' => 'Daftar Kerjasama' 
         ]);
     }
 
@@ -56,6 +58,7 @@ class KerjasamaController extends Controller
 
         return view('kerjasama.show', [
             'kerjasama' => $kerjasama,
+            // Judul di halaman detail adalah nama mitra
             'title' => $kerjasama->nama_mitra
         ]);
     }

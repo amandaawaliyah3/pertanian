@@ -15,5 +15,12 @@ class Kerjasama extends Model
         'tanggal_mulai',
         'tanggal_selesai',
         'keterangan',
+        'logo', // <--- ✅ INI YANG HILANG! DITAMBAHKAN
+    ];
+    
+    // Sebagai praktik terbaik untuk penanganan tanggal
+    protected $casts = [
+        'tanggal_mulai' => 'date',
+        'tanggal_selesai' => 'date',
     ];
 }
