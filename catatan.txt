@@ -3,4 +3,8 @@ docker compose up -d --build
 docker exec -it pertanian-app sh
 composer install
 php artisan key:generate
+php artisan migrate
 php artisan storage:link
+
+sudo chown -R www-data:www-data /var/www/html/storage
+sudo chown -R www-data:www-data /var/www/html/bootstrap/cache

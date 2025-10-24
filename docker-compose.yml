@@ -1,5 +1,3 @@
-docker-compose.yml (Revisi untuk MariaDB)
-
 # File: docker-compose.yml
 version: "3.8"
 services:
