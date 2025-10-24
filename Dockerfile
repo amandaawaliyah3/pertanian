@@ -1,18 +1,20 @@
 # File: Dockerfile
 
-# Menggunakan base image PHP-FPM versi 8.4 di Alpine
+# Menggunakan base image PHP-FPM versi 8.2 di Alpine
 FROM php:8.4-fpm-alpine
 
-# Mengatur environment variable untuk mematikan int>
+# Mengatur environment variable untuk mematikan interaksi TTY
 ENV DEBIAN_FRONTEND noninteractive
 
 ## 1. Instalasi Dependensi Sistem
-# libxml2: WAJIB untuk ekstensi DOM/XML di Alpine
+# build-base: Untuk mengkompilasi ekstensi.
+# icu-dev: Untuk ekstensi intl.
+# libpng-dev: Untuk ekstensi gd.
+# libzip-dev: Untuk ekstensi zip.
 RUN apk update && apk add --no-cache \
     build-base \
     autoconf \
     libxml2-dev \
-    libxml2 \
     mysql-client \
     git \
     zip \
@@ -23,25 +25,12 @@ RUN apk update && apk add --no-cache \
     && rm -rf /var/cache/apk/*
 
 ## 2. Instalasi Ekstensi PHP
-# Kita akan menghapus 'dom' dan 'xmlreader' dan fok>
-# Di PHP 8.4 Alpine, 'dom' sering bermasalah saat b>
-RUN docker-php-ext-install \
-    pdo \
-    pdo_mysql \
-    opcache \
-    intl \
-    gd \
-    zip \
-    # KOREKSI: Instal ekstensi 'xml' sebagai pengga>
-    # yang sering konflik atau sudah built-in.
-    xml
+# pdo_mysql: Untuk koneksi MariaDB/MySQL.
+# intl, gd, zip: Diperlukan oleh Filament dan PHPSpreadsheet.
+RUN docker-php-ext-install pdo pdo_mysql opcache intl gd zip
 
 ## 3. Instalasi Composer
-COPY --from=composer:latest /usr/bin/composer /usr/>
-
-## 3.5. Konfigurasi PHP untuk Upload (Fix Upload Lo>
-RUN mkdir -p /usr/local/etc/php/conf.d/
-COPY docker/php/uploads.ini /usr/local/etc/php/conf>
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 ## 4. Konfigurasi Aplikasi
 # Mengatur direktori kerja
