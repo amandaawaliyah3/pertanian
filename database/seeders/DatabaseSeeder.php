@@ -14,14 +14,8 @@ class DatabaseSeeder extends Seeder
     {
         // Menjalankan seeder FooterSettingSeeder dan lainnya (jika ada)
         $this->call([
-            FooterSettingSeeder::class,
+            ProdiSeeder::class,
             // Tambahkan seeder lain di sini jika perlu
-        ]);
-
-        // Menambahkan user dummy
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
         ]);
     }
 }
