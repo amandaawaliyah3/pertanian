@@ -10,7 +10,8 @@ class GaleriController extends Controller
     public function index(Request $request)
     {
         $galeris = Galeri::filter($request->only(['kategori', 'search']))
-            ->latest()
+            // ✅ PERBAIKAN: Urutkan berdasarkan kolom 'tanggal' yang diinput di Filament
+            ->orderBy('tanggal', 'desc') 
             ->paginate(8) // Pagination 8 item per halaman
             ->withQueryString(); // Agar filter tetap saat pindah halaman
 

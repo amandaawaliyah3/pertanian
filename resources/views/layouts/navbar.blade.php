@@ -7,9 +7,9 @@
         <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
             @if ($logo && $logo->logo_url)
                 <img src="{{ $logo->logo_url }}" 
-                     alt="Logo {{ $logo->institution_name ?? 'Jurusan Pertanian' }}"
-                     height="65"
-                     class="me-2">
+                    alt="Logo {{ $logo->institution_name ?? 'Jurusan Pertanian' }}"
+                    height="65"
+                    class="me-2">
             @endif
             <div>
                 <span class="fw-bold text-white">{{ $logo->institution_name ?? 'Jurusan Pertanian' }}</span>
@@ -33,7 +33,6 @@
                     </a>
                 </li>
 
-                <!-- PERTANIAN -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">
                         <i class="fas fa-info-circle me-1"></i> PERTANIAN
@@ -48,15 +47,13 @@
                     </ul>
                 </li>
 
-                <!-- JURUSAN PERTANIAN -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">
                         <i class="fas fa-graduation-cap me-1"></i> JURUSAN PERTANIAN
                     </a>
                     <ul class="dropdown-menu">
-                        <!-- D3 -->
                         <li class="nav-item dropstart">
-                            <a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <a class="dropdown-item dropdown-toggle" href="/d3">
                                 <i class="fas fa-certificate me-2"></i> D3
                             </a>
                             <ul class="dropdown-menu">
@@ -65,9 +62,8 @@
                             </ul>
                         </li>
 
-                        <!-- D4 / S1 Terapan -->
                         <li class="nav-item dropstart">
-                            <a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <a class="dropdown-item dropdown-toggle" href="/d4">
                                 <i class="fas fa-certificate me-2"></i> D4 / S1 Terapan
                             </a>
                             <ul class="dropdown-menu">

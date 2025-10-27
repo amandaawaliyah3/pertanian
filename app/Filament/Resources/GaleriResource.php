@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\GaleriResource\Pages;
-use App\Filament\Resources\GaleriResource\RelationManagers;
 use App\Models\Galeri;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,7 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Storage;
 
 class GaleriResource extends Resource
 {
@@ -25,12 +24,18 @@ class GaleriResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Section::make('Informasi Galeri')
+                    // Menggunakan array statis yang bersih
                     ->schema([
                         Forms\Components\FileUpload::make('foto')
                             ->image()
                             ->directory('galeri')
                             ->required()
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            
+                            // ❌ HAPUS HOOK mutateDehydratedState untuk mencegah TypeError
+                            ->nullable(fn (string $operation): bool => $operation === 'edit'), 
+                            // *Logika delete saat update harus dipindahkan ke Model Galeri*
+                            
                         Forms\Components\TextInput::make('judul')
                             ->required()
                             ->maxLength(255),
@@ -56,8 +61,10 @@ class GaleriResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('foto')
-                    ->label('Foto'),
+                Tables\Columns\ImageColumn::make('foto') 
+                    ->label('Foto')
+                    ->disk('public'), 
+                
                 Tables\Columns\TextColumn::make('judul')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('kategori')
@@ -79,11 +86,25 @@ class GaleriResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                
+                // ✅ Hooks Delete (ini harus tetap ada karena tidak menyebabkan TypeError)
+                Tables\Actions\DeleteAction::make()
+                    ->before(function (Galeri $record) {
+                        if ($record->foto) {
+                            Storage::disk('public')->delete($record->foto);
+                        }
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function (\Illuminate\Support\Collection $records) {
+                            $records->each(function (Galeri $record) {
+                                if ($record->foto) {
+                                    Storage::disk('public')->delete($record->foto);
+                                }
+                            });
+                        }),
                 ]),
             ]);
     }
