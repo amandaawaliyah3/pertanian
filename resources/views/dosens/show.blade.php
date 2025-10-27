@@ -37,10 +37,6 @@
                             <td>{{ $dosen->email ?? '-' }}</td>
                         </tr>
                         <tr>
-                            <th>No HP</th>
-                            <td>{{ $dosen->no_hp ?? '-' }}</td>
-                        </tr>
-                        <tr>
                             <th>Program Studi</th>
                             <td>{{ $dosen->prodi->nama_prodi ?? '-' }}</td>
                         </tr>

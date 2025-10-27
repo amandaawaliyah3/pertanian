@@ -15,6 +15,7 @@ use Filament\Tables\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Support\Facades\Storage; // Pastikan ini di-import
 
 class DosenResource extends Resource
 {
@@ -51,6 +52,7 @@ class DosenResource extends Resource
                 ->preload()
                 ->required(),
 
+            // FileUpload tanpa hook yang menyebabkan TypeError (Logic delete saat update ada di EditDosen.php)
             FileUpload::make('foto')
                 ->label('Foto Dosen')
                 ->directory('dosen')
@@ -66,6 +68,7 @@ class DosenResource extends Resource
             ->columns([
                 ImageColumn::make('foto')
                     ->label('Foto')
+                    ->disk('public') // Pastikan disk public untuk tampilan
                     ->square()
                     ->size(50),
 
@@ -78,7 +81,27 @@ class DosenResource extends Resource
             ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                
+                // Hook untuk menghapus file saat Single Delete
+                Tables\Actions\DeleteAction::make()
+                    ->before(function (\App\Models\Dosen $record) {
+                        if ($record->foto) {
+                            Storage::disk('public')->delete($record->foto);
+                        }
+                    }),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    // Hook untuk menghapus file saat Bulk Delete
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function (\Illuminate\Support\Collection $records) {
+                            $records->each(function (\App\Models\Dosen $record) {
+                                if ($record->foto) {
+                                    Storage::disk('public')->delete($record->foto);
+                                }
+                            });
+                        }),
+                ]),
             ]);
     }
 

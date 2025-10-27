@@ -56,7 +56,10 @@
                                 class="rounded-circle border border-3 border-success mb-3" 
                                 width="120" height="120" style="object-fit: cover;">
                             <h4 class="fw-bold mb-1">{{ $kaprodi->nama_dosen }}</h4>
-                            <p class="mb-1 text-muted">{{ $kaprodi->nidn }}</p>
+                            
+                            {{-- ✅ PERBAIKAN: Menampilkan NIP --}}
+                            <p class="mb-1 text-muted">{{ $kaprodi->nip ?? '-' }}</p> 
+                            
                             <a href="{{ route('dosen.show', $kaprodi) }}" class="btn btn-outline-success btn-sm mt-2">
                                 <i class="fas fa-eye me-1"></i>Lihat Detail
                             </a>
@@ -89,7 +92,10 @@
                                                     class="rounded-circle border border-2 border-success mb-3" 
                                                     width="80" height="80" style="object-fit: cover;">
                                                 <h5 class="fw-bold mb-1">{{ $dosen->nama_dosen }}</h5>
-                                                <p class="text-muted mb-1">{{ $dosen->nidn ?? '-' }}</p>
+                                                
+                                                {{-- ✅ PERBAIKAN: Menampilkan NIP --}}
+                                                <p class="text-muted mb-1">{{ $dosen->nip ?? '-' }}</p> 
+                                                
                                                 <a href="{{ route('dosen.show', $dosen) }}" class="btn btn-outline-success btn-sm mt-2">
                                                     <i class="fas fa-eye me-1"></i>Lihat Detail
                                                 </a>
