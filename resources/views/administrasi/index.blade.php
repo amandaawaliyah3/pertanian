@@ -1,53 +1,41 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h4>Data Administrasi</h4>
-            <a href="{{ route('administrasi.create') }}" class="btn btn-primary">Tambah Data</a>
-        </div>
-        <div class="card-body">
-            @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Foto</th>
-                        <th>Nama</th>
-                        <th>NIP</th>
-                        <th>Bidang</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($data as $item)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>
-                            @if($item->foto)
-                                <img src="{{ asset('storage/'.$item->foto) }}" width="50">
-                            @endif
-                        </td>
-                        <td>{{ $item->nama }}</td>
-                        <td>{{ $item->nip }}</td>
-                        <td>{{ $item->bidang }}</td>
-                        <td>
-                            <a href="{{ route('administrasi.show', $item->id) }}" class="btn btn-info btn-sm">Lihat</a>
-                            <a href="{{ route('administrasi.edit', $item->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="{{ route('administrasi.destroy', $item->id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin menghapus?')">Hapus</button>
-                            </form>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+<div class="container py-5">
+    <h2 class="text-center mb-4 fw-bold">Data Administrasi</h2>
+
+    <div class="row justify-content-center">
+        @forelse ($data as $item)
+            <div class="col-md-4 mb-4">
+                <div class="card text-center shadow-sm border-0 rounded-4 p-3">
+                    <div class="card-body">
+                        @if($item->foto)
+                            <img src="{{ asset('storage/' . $item->foto) }}"
+                                alt="{{ $item->nama }}"
+                                class="rounded-circle mb-3 shadow-sm"
+                                style="width:120px; height:120px; object-fit:cover;">
+                        @else
+                            <img src="{{ asset('images/default.png') }}"
+                                alt="default"
+                                class="rounded-circle mb-3 shadow-sm"
+                                style="width:120px; height:120px; object-fit:cover;">
+                        @endif
+
+                        <h5 class="fw-bold mb-1">{{ $item->nama }}</h5>
+                        <p class="text-muted mb-1">{{ $item->nip ?? '-' }}</p>
+                        <p class="mb-2"><strong>Bidang:</strong> {{ $item->bidang ?? '-' }}</p>
+
+                        <a href="{{ route('administrasi.show', $item->id) }}" class="btn btn-primary btn-sm mt-2">
+                            Lihat Profil
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="col-12 text-center">
+                <p class="text-muted">Belum ada data administrasi.</p>
+            </div>
+        @endforelse
     </div>
 </div>
 @endsection
