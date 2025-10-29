@@ -18,6 +18,7 @@ class FasilitasResource extends Resource
     protected static ?string $modelLabel = 'Fasilitas';
     protected static ?string $navigationGroup = 'PERTANIAN';
     protected static ?string $navigationLabel = 'Manajemen Fasilitas';
+    protected static ?int $navigationSort = 10; // Contoh penentuan urutan navigasi
 
     public static function form(Form $form): Form
     {
@@ -28,8 +29,8 @@ class FasilitasResource extends Resource
                     ->image()
                     ->directory('fasilitas')
                     ->required()
-                    ->maxSize(1024)
                     ->columnSpanFull(),
+                    // Logic delete saat update DIHILANGKAN DARI SINI dan dipindah ke Page Class
 
                 Forms\Components\TextInput::make('nama')
                     ->label('Nama Fasilitas')
