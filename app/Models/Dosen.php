@@ -11,19 +11,20 @@ class Dosen extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nama_dosen',                 // Nama lengkap dosen
-        'nip',                  // Nomor Induk Pegawai
-        'nidn',                 // Nomor Induk Dosen Nasional
-        'email',                // Email dosen
-        'no_hp',                // Nomor HP
-        'bidang_keahlian',      // String berisi daftar keahlian (bisa dipisah koma)
-        'riwayat_pendidikan',   // Riwayat pendidikan
-        'pengalaman_kerja',     // Pengalaman kerja
-        'foto',                 // Path foto di storage
-        'penelitian',           // JSON array
-        'publikasi',            // JSON array
-        'is_kaprodi',           // Boolean apakah dosen ini Kaprodi
-        'prodi_id',             // Relasi ke tabel prodi
+        'nama_dosen',
+        'nip',
+        'nidn',
+        'email',
+        'no_hp',
+        'bidang_keahlian',
+        'riwayat_pendidikan',
+        'pengalaman_kerja',
+        'foto',
+        'penelitian',
+        'publikasi',
+        'is_kaprodi',
+        'prodi_id',
+        'jabatan', // ✅ FIX: Kolom jabatan ditambahkan ke fillable
     ];
 
     protected $casts = [

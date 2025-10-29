@@ -57,7 +57,6 @@ class DosenResource extends Resource
                 ->label('Foto Dosen')
                 ->directory('dosen')
                 ->image()
-                ->maxSize(2048)
                 ->nullable(),
         ]);
     }

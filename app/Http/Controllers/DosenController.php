@@ -10,33 +10,27 @@ use Illuminate\Support\Facades\Storage;
 class DosenController extends Controller
 {
     /**
-     * 🧩 Menampilkan halaman Data Dosen (dengan filter Prodi)
+     * 🧩 Menampilkan halaman Data Dosen (dengan Tab per Prodi)
      */
     public function index(Request $request)
     {
-        // Ambil semua prodi untuk dropdown
-        $prodis = Prodi::orderBy('nama_prodi')->get();
+        // FIX: Mengganti 'dosen' menjadi 'dosens' di Eager Loading
+        $prodis = Prodi::with(['dosens' => function ($query) {
+            $query->orderByDesc('is_kaprodi')
+                  ->orderBy('nama_dosen');
+        }])
+        ->orderBy('nama_prodi')
+        ->get(); 
 
-        // Ambil parameter prodi_id dari URL (?prodi_id=3)
-        $prodi_id = $request->get('prodi_id');
+        $activeProdiId = $request->get('prodi_id') 
+                         ?? ($prodis->first()->id ?? null);
 
-        // Default kosong dulu
-        $dosens = collect();
-        $selectedProdi = null;
-
-        // Jika sudah memilih prodi
-        if ($prodi_id) {
-            $selectedProdi = Prodi::find($prodi_id);
-
-            $dosens = Dosen::with('prodi')
-                ->where('prodi_id', $prodi_id)
-                ->orderByDesc('is_kaprodi')
-                ->orderBy('nama_dosen')
-                ->get();
+        // Jika tidak ada parameter ID, set default ke prodi pertama untuk tampilan aktif
+        if (!$request->get('prodi_id') && $prodis->isNotEmpty()) {
+            $activeProdiId = $prodis->first()->id;
         }
 
-        // 🔥 FIX DI SINI: gunakan 'dosens.index' bukan 'dosen.index'
-        return view('dosens.index', compact('dosens', 'prodis', 'selectedProdi'));
+        return view('dosens.index', compact('prodis', 'activeProdiId')); 
     }
 
     /**
@@ -45,25 +39,30 @@ class DosenController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama_dosen'         => 'required|string|max:255',
-            'nip'                => 'required|string|max:255|unique:dosens,nip',
-            'nidn'               => 'nullable|string|max:255',
-            'no_hp'              => 'nullable|string|max:20',
-            'email'              => 'nullable|email|max:255',
-            'bidang_keahlian'    => 'nullable|string',
-            'riwayat_pendidikan' => 'nullable|string',
-            'pengalaman_kerja'   => 'nullable|string',
-            'foto'               => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'penelitian'         => 'nullable|string',
-            'publikasi'          => 'nullable|string',
-            'prodi_id'           => 'required|exists:prodis,id',
+            'nama_dosen'             => 'required|string|max:255',
+            'nip'                    => 'required|string|max:255|unique:dosens,nip',
+            'nidn'                   => 'nullable|string|max:255',
+            'no_hp'                  => 'nullable|string|max:20',
+            'email'                  => 'nullable|email|max:255',
+            'bidang_keahlian'        => 'nullable|string',
+            'riwayat_pendidikan'     => 'nullable|string',
+            'pengalaman_kerja'       => 'nullable|string',
+            'foto'                   => 'nullable|image|mimes:jpg,jpeg,png',
+            'penelitian'             => 'nullable|string',
+            'publikasi'              => 'nullable|string',
+            'prodi_id'               => 'required|exists:prodis,id',
+            'jabatan'                => 'nullable|string|max:255',
         ]);
+        
+        $dataToStore = array_map(function ($value) {
+            return $value === '' ? null : $value;
+        }, $validated);
 
         if ($request->hasFile('foto')) {
-            $validated['foto'] = $request->file('foto')->store('dosen', 'public');
+            $dataToStore['foto'] = $request->file('foto')->store('dosen', 'public');
         }
 
-        Dosen::create($validated);
+        Dosen::create($dataToStore);
 
         return redirect()->route('dosen.index')
             ->with('success', 'Data dosen berhasil ditambahkan.');
@@ -93,28 +92,37 @@ class DosenController extends Controller
     public function update(Request $request, Dosen $dosen)
     {
         $validated = $request->validate([
-            'nama_dosen'         => 'required|string|max:255',
-            'nip'                => 'required|string|max:255|unique:dosens,nip,' . $dosen->id,
-            'nidn'               => 'nullable|string|max:255',
-            'no_hp'              => 'nullable|string|max:20',
-            'email'              => 'nullable|email|max:255',
-            'bidang_keahlian'    => 'nullable|string',
-            'riwayat_pendidikan' => 'nullable|string',
-            'pengalaman_kerja'   => 'nullable|string',
-            'foto'               => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'penelitian'         => 'nullable|string',
-            'publikasi'          => 'nullable|string',
-            'prodi_id'           => 'required|exists:prodis,id',
+            'nama_dosen'             => 'required|string|max:255',
+            'nip'                    => 'required|string|max:255|unique:dosens,nip,' . $dosen->id,
+            'nidn'                   => 'nullable|string|max:255',
+            'no_hp'                  => 'nullable|string|max:20',
+            'email'                  => 'nullable|email|max:255',
+            'bidang_keahlian'        => 'nullable|string',
+            'riwayat_pendidikan'     => 'nullable|string',
+            'pengalaman_kerja'       => 'nullable|string',
+            'foto'                   => 'nullable|image|mimes:jpg,jpeg,png',
+            'penelitian'             => 'nullable|string',
+            'publikasi'              => 'nullable|string',
+            'prodi_id'               => 'required|exists:prodis,id',
+            'jabatan'                => 'nullable|string|max:255',
         ]);
+
+        $dataToUpdate = array_map(function ($value) {
+            return $value === '' ? null : $value;
+        }, $request->all());
+        
+        $dataToUpdate = array_intersect_key($dataToUpdate, $validated);
 
         if ($request->hasFile('foto')) {
             if ($dosen->foto) {
                 Storage::disk('public')->delete($dosen->foto);
             }
-            $validated['foto'] = $request->file('foto')->store('dosen', 'public');
+            $dataToUpdate['foto'] = $request->file('foto')->store('dosen', 'public');
+        } elseif (!isset($dataToUpdate['foto'])) {
+             $dataToUpdate['foto'] = $dosen->foto; 
         }
 
-        $dosen->update($validated);
+        $dosen->update($dataToUpdate);
 
         return redirect()->route('dosen.index', ['prodi_id' => $dosen->prodi_id])
             ->with('success', 'Data dosen berhasil diperbarui.');

@@ -25,13 +25,14 @@
                                 style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
                         <h4 class="mt-3 fw-bold mb-0 text-success">{{ $dosen->nama_dosen }}</h4>
+                        <p class="text-muted mb-4">{{ $dosen->jabatan ?? 'Tenaga Pengajar' }}</p>
                     </div>
 
                     {{-- Kolom Kanan: Detail Dasar --}}
-                    {{-- ✅ FIX: Hapus align-self-center untuk memastikan rata ke atas (top-aligned) --}}
                     <div class="col-md-8 text-start"> 
                         <h5 class="fw-bold text-success mb-3">Informasi Kontak & Jabatan</h5>
-                        <table class="table table-striped table-sm">
+                        {{-- ✅ PERBAIKAN: Mengganti table-borderless menjadi table-bordered --}}
+                        <table class="table table-striped table-bordered table-sm">
                             <tbody>
                                 <tr>
                                     <th width="35%">NIP</th>
@@ -58,8 +59,7 @@
                 
                 {{-- Bagian Pendidikan, Pengalaman, Keahlian (Full Width) --}}
                 <div class="text-start p-2">
-                    {{-- ... (kode bidang keahlian, pendidikan, pengalaman) ... --}}
-
+                    
                     {{-- Bidang Keahlian --}}
                     @if(!empty($dosen->bidang_keahlian))
                     <div class="mb-4">
