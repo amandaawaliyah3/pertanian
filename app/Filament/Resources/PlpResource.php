@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PlpResource\Pages;
-use App\Filament\Resources\PlpResource\RelationManagers;
 use App\Models\Plp;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,7 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Storage; // <-- Tambahkan ini
 
 class PlpResource extends Resource
 {
@@ -32,8 +31,9 @@ class PlpResource extends Resource
                         Forms\Components\FileUpload::make('foto')
                             ->image()
                             ->directory('plp')
-                            ->columnSpanFull(),
-
+                            ->columnSpanFull()
+                            ->nullable(fn (string $operation): bool => $operation === 'edit'), // Izinkan null untuk update
+                            
                         Forms\Components\TextInput::make('nama')
                             ->required()
                             ->maxLength(255),
@@ -66,6 +66,7 @@ class PlpResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('foto')
                     ->label('Foto')
+                    ->disk('public') // Pastikan disk public
                     ->circular(),
 
                 Tables\Columns\TextColumn::make('nama')
@@ -97,11 +98,26 @@ class PlpResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                
+                // ✅ Hapus foto saat Single Delete
+                Tables\Actions\DeleteAction::make()
+                    ->before(function (Plp $record) {
+                        if ($record->foto) {
+                            Storage::disk('public')->delete($record->foto);
+                        }
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // ✅ Hapus foto saat Bulk Delete
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function (\Illuminate\Support\Collection $records) {
+                            $records->each(function (Plp $record) {
+                                if ($record->foto) {
+                                    Storage::disk('public')->delete($record->foto);
+                                }
+                            });
+                        }),
                 ]),
             ])
             ->emptyStateActions([
@@ -112,7 +128,7 @@ class PlpResource extends Resource
     public static function getRelations(): array
     {
         return [
-            // Tambahkan relasi jika diperlukan
+            //
         ];
     }
 

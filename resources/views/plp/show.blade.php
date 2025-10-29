@@ -12,7 +12,11 @@
                          class="rounded-circle mb-3"
                          width="200"
                          height="200"
-                         alt="{{ $plp->nama }}">
+                         alt="{{ $plp->nama }}"
+                         
+                         {{-- ✅ PERBAIKAN: Tambahkan CSS object-fit: cover untuk mencegah distorsi --}}
+                         style="object-fit: cover;"> 
+                         
                     <h3>{{ $plp->nama }}</h3>
                     <p class="text-muted">{{ $plp->jabatan }}</p>
 

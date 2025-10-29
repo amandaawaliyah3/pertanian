@@ -15,7 +15,11 @@
                          class="rounded-circle"
                          width="120"
                          height="120"
-                         alt="{{ $plp->nama }}">
+                         alt="{{ $plp->nama }}"
+                         
+                         {{-- ✅ PERBAIKAN: Tambahkan CSS object-fit: cover --}}
+                         style="object-fit: cover;"> 
+                         
                 </div>
                 <div class="card-body text-center">
                     <h5 class="card-title">{{ $plp->nama }}</h5>
