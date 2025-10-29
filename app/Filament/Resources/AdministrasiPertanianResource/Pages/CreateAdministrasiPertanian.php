@@ -9,4 +9,10 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateAdministrasiPertanian extends CreateRecord
 {
     protected static string $resource = AdministrasiPertanianResource::class;
+
+    // ✅ HOOK: Mengarahkan pengguna ke halaman 'index' (List Administrasi) setelah Create
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

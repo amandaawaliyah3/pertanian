@@ -8,6 +8,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use App\Filament\Resources\AdministrasiPertanianResource\Pages\CreateAdministrasiPertanian;
@@ -19,11 +21,8 @@ class AdministrasiPertanianResource extends Resource
     protected static ?string $model = AdministrasiPertanian::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-
     protected static ?string $navigationLabel = 'Data Administrasi';
-
     protected static ?string $navigationGroup = 'PERTANIAN';
-
     protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
@@ -36,11 +35,15 @@ class AdministrasiPertanianResource extends Resource
                             ->label('Foto Profil')
                             ->image()
                             ->directory('foto-administrasi')
+                            
+                            // Menggunakan UUID untuk penamaan file yang unik dan aman
                             ->getUploadedFileNameForStorageUsing(
-                                fn (TemporaryUploadedFile $file): string =>
-                                    (string) Str::uuid().'.'.$file->extension()
+                                fn (TemporaryUploadedFile $file): string => (string) Str::uuid().'.'.$file->extension()
                             )
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            
+                            // Di sini dihapus hooks delete yang menyebabkan Type Error
+                            ->nullable(fn (string $operation): bool => $operation === 'edit'), 
 
                         Forms\Components\TextInput::make('nama')
                             ->required()
@@ -65,6 +68,7 @@ class AdministrasiPertanianResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('foto')
                     ->label('Foto')
+                    ->disk('public')
                     ->circular(),
 
                 Tables\Columns\TextColumn::make('nama')
@@ -93,12 +97,31 @@ class AdministrasiPertanianResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                
+                // Hapus foto saat Single Delete
+                Tables\Actions\DeleteAction::make()
+                    ->before(function (AdministrasiPertanian $record) {
+                        if ($record->foto) {
+                            Storage::disk('public')->delete($record->foto);
+                        }
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // Hapus foto saat Bulk Delete
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function (\Illuminate\Support\Collection $records) {
+                            $records->each(function (AdministrasiPertanian $record) {
+                                if ($record->foto) {
+                                    Storage::disk('public')->delete($record->foto);
+                                }
+                            });
+                        }),
                 ]),
+            ])
+            // ✅ FIX: Hapus tombol create dari empty state dengan array kosong
+            ->emptyStateActions([
+                // Hapus baris ini: Tables\Actions\CreateAction::make(),
             ]);
     }
 
