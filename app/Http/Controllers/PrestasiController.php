@@ -6,12 +6,22 @@ use App\Models\Prestasi;
 
 class PrestasiController extends Controller
 {
+    // Halaman daftar prestasi
+    public function index()
+    {
+        $prestasi = Prestasi::latest()->paginate(6); // ambil semua prestasi, bisa pagination
+
+        return view('prestasi.index', [
+            'prestasi' => $prestasi,
+            'title' => 'Daftar Prestasi'
+        ]);
+    }
+
+    // Halaman detail prestasi
     public function show($id)
     {
-        // Get the specific achievement with proper error handling
         $prestasi = Prestasi::findOrFail($id);
         
-        // Get 3 related achievements (excluding current one)
         $relatedPrestasi = Prestasi::where('id', '!=', $id)
             ->latest()
             ->take(3)
