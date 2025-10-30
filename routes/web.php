@@ -33,6 +33,7 @@ Route::prefix('berita')->name('berita.')->group(function () {
 });
 
 // 🏅 Prestasi
+Route::get('/prestasi', [PrestasiController::class, 'index'])->name('prestasi.index');
 Route::get('/prestasi/{id}', [PrestasiController::class, 'show'])->name('prestasi.show');
 
 // 👨‍🏫 Dosen
