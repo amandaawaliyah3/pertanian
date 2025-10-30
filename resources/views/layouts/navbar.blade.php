@@ -44,6 +44,7 @@
                         <li><a class="dropdown-item" href="/administrasi"><i class="fas fa-user-tie me-2"></i>Data Administrasi</a></li>
                         <li><a class="dropdown-item" href="/galeri"><i class="fas fa-images me-2"></i>Galeri</a></li>
                         <li><a class="dropdown-item" href="/fasilitas"><i class="fas fa-building me-2"></i>Fasilitas</a></li>
+                        <li><a class="dropdown-item" href="/prestasi"><i class="fas fa-trophy me-2"></i> Prestasi</a></li>
                     </ul>
                 </li>
 
