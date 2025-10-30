@@ -13,7 +13,6 @@ use App\Http\Controllers\{
     PrestasiController,
     Diploma3ProdiController,
     Diploma4ProdiController,
-    JalurMasukController,
     PlpController,
     InfoBoxController,
     AdministrasiPertanianController
