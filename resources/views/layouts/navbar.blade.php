@@ -55,7 +55,7 @@
                     <ul class="dropdown-menu">
                         <li class="nav-item dropstart">
                             <a class="dropdown-item dropdown-toggle" href="/d3">
-                                <i class="fas fa-certificate me-2"></i> D3
+                                <i class="fa-solid fa-user-graduate me-2 text-primary"></i> D3
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="/d3/1">Budidaya Tanaman Perkebunan (D3)</a></li>
@@ -65,7 +65,7 @@
 
                         <li class="nav-item dropstart">
                             <a class="dropdown-item dropdown-toggle" href="/d4">
-                                <i class="fas fa-certificate me-2"></i> D4 / S1 Terapan
+                                <i class="fa-solid fa-graduation-cap me-2 text-warning"></i> D4 / S1 Terapan
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="/d4/1">Pengelolaan Perkebunan (S1 Terapan)</a></li>
