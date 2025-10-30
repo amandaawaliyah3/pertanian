@@ -73,9 +73,6 @@
                                 <li><a class="dropdown-item" href="/d4/3">Teknologi Rekayasa Pangan (S1 Terapan)</a></li>
                             </ul>
                         </li>
-
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="/jalurmasuk"><i class="fas fa-door-open me-2"></i> Jalur Masuk</a></li>
                     </ul>
                 </li>
 
