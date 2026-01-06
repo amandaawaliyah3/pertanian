@@ -65,12 +65,12 @@
 
                         <li class="nav-item dropstart">
                             <a class="dropdown-item dropdown-toggle" href="/d4">
-                                <i class="fa-solid fa-graduation-cap me-2 text-warning"></i> D4 / S1 Terapan
+                                <i class="fa-solid fa-graduation-cap me-2 text-warning"></i> D4 
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="/d4/1">Pengelolaan Perkebunan (S1 Terapan)</a></li>
-                                <li><a class="dropdown-item" href="/d4/2">Teknologi Produksi Tanaman Pangan (S1 Terapan)</a></li>
-                                <li><a class="dropdown-item" href="/d4/3">Teknologi Rekayasa Pangan (S1 Terapan)</a></li>
+                                <li><a class="dropdown-item" href="/d4/1">Pengelolaan Perkebunan (D4)</a></li>
+                                <li><a class="dropdown-item" href="/d4/2">Teknologi Produksi Tanaman Pangan (D4)</a></li>
+                                <li><a class="dropdown-item" href="/d4/3">Teknologi Rekayasa Pangan (D4)</a></li>
                             </ul>
                         </li>
                     </ul>
