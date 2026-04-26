@@ -1,61 +1,100 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Website Jurusan Pertanian 🌾
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Website resmi Jurusan Pertanian yang dibangun menggunakan framework **Laravel 12** dan **Filament PHP v3**. Proyek ini dirancang untuk mengelola informasi akademik, berita, prestasi, profil dosen, dan fasilitas jurusan secara efisien.
 
-## About Laravel
+## 🚀 Teknologi Utama
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Framework:** [Laravel 12](https://laravel.com)
+- **Admin Panel:** [Filament PHP v3](https://filamentphp.com)
+- **Frontend:** [Tailwind CSS v4](https://tailwindcss.com), Bootstrap 5, Sass
+- **Database:** MySQL / MariaDB
+- **Asset Manager:** Vite
+- **Fitur Tambahan:** 
+  - `maatwebsite/excel` untuk ekspor/impor data.
+  - `intervention/image` untuk pengolahan gambar.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Fitur Utama
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 👤 User Interface (Public)
+- **Beranda:** Ringkasan informasi terbaru dan box informasi interaktif.
+- **Berita:** Manajemen artikel berita dengan sistem komentar.
+- **Profil Jurusan:** Sejarah, Visi & Misi, serta struktur organisasi.
+- **Program Studi:** Detail informasi untuk Diploma 3 (D3) dan Diploma 4 (D4).
+- **Direktori Dosen:** Daftar pengajar beserta detail profilnya, termasuk fitur penetapan Ketua Program Studi (Kaprodi).
+- **Prestasi:** Galeri pencapaian mahasiswa dan jurusan.
+- **Fasilitas:** Informasi sarana dan prasarana pendukung.
+- **Galeri:** Dokumentasi kegiatan dalam bentuk foto/video.
+- **Kerjasama:** Daftar mitra dan program kolaborasi.
+- **PLP & Administrasi:** Informasi teknisi laboratorium dan tata usaha.
 
-## Learning Laravel
+### 🔐 Admin Panel (Filament)
+- Dashboard statistik.
+- Manajemen konten menyeluruh (CRUD untuk Berita, Dosen, Fasilitas, dll).
+- Pengaturan situs (Logo, Footer, Info Box).
+- Moderasi komentar.
+- Manajemen User & Role.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🛠️ Instalasi
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Prasyarat
+- PHP >= 8.2
+- Composer
+- Node.js & NPM
+- MySQL/MariaDB
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Langkah-langkah
+1. **Clone repositori:**
+   ```bash
+   git clone https://github.com/username/pertanian.git
+   cd pertanian
+   ```
 
-## Laravel Sponsors
+2. **Instal dependensi PHP:**
+   ```bash
+   composer install
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+3. **Instal dependensi JavaScript:**
+   ```bash
+   npm install
+   ```
 
-### Premium Partners
+4. **Konfigurasi Environment:**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+   *Sesuaikan pengaturan database di file `.env`.*
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development/)**
-- **[Active Logic](https://activelogic.com)**
+5. **Migrasi dan Seeder:**
+   ```bash
+   php artisan migrate --seed
+   ```
 
-## Contributing
+6. **Build Asset:**
+   ```bash
+   npm run build
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+7. **Jalankan Server:**
+   ```bash
+   php artisan serve
+   ```
 
-## Code of Conduct
+## 🐳 Docker (Opsional)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Proyek ini sudah dilengkapi dengan konfigurasi Docker. Jalankan perintah berikut untuk memulai:
+```bash
+docker-compose up -d
+```
 
-## Security Vulnerabilities
+## 📂 Struktur Folder Penting
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- `app/Filament/Resources`: Konfigurasi admin panel.
+- `app/Models`: Model database.
+- `resources/views`: Template tampilan (Blade).
+- `routes/web.php`: Definisi rute aplikasi.
 
-## License
+## 📄 Lisensi
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Proyek ini menggunakan lisensi [MIT](LICENSE).
